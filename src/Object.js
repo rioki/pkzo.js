@@ -13,6 +13,7 @@ pkzo.Object.prototype.draw = function (gl, shader, parentModelViewMatrix) {
   
   var modelViewMatrix = pkzo.multMatrix(parentModelViewMatrix, this.transform);
   shader.setUniformMatrix4fv('uModelViewMatrix', modelViewMatrix);
+	shader.setUniformMatrix4fv('uModelMatrix', this.transform);
   
   this.material.setup(gl, shader);
   this.mesh.draw(gl, shader);

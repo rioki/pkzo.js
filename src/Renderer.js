@@ -22,7 +22,8 @@ pkzo.Renderer.prototype.render = function (scene, camera) {
 		camera.aspect = gl.width / gl.height;
 		camera.update();
 		shader.setUniformMatrix4fv('uProjectionMatrix', camera.projectionMatrix);		
-		shader.setUniformMatrix3fv('uNormalMatrix', camera.normalMatrix);		
+		shader.setUniformMatrix4fv('uViewMatrix',       camera.viewMatrix);		
+		shader.setUniformMatrix3fv('uNormalMatrix',     camera.normalMatrix);		
 		
 		var modelViewMatrix = pkzo.mat4(camera.viewMatrix);		
 		

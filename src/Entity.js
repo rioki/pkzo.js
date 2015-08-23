@@ -3,6 +3,10 @@ pkzo.Entity = function () {
   this.transform = pkzo.mat4(1);
 }
 
+pkzo.Entity.prototype.rotate = function (angle, x, y, z) {
+	this.transform = pkzo.rotate(this.transform, angle, x, y, z);
+}
+
 pkzo.Entity.prototype.getXVector = function () {
 	return pkzo.vec3(this.transform[0], this.transform[1], this.transform[2]);
 }
