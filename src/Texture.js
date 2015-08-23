@@ -1,6 +1,5 @@
 
-pkzo.Texture = function (gl, url) {
-  this.gl     = gl;
+pkzo.Texture = function (url) {
   this.url    = url;
   this.image  = null;
   this.loaded = false;
@@ -9,14 +8,11 @@ pkzo.Texture = function (gl, url) {
   this.load();
 }
 
-pkzo.Texture.prototype.load = function () {
+pkzo.Texture.prototype.load = function () {	
   this.image = new Image();
   var texture = this;
   this.image.onload = function () {
-    texture.loaded = true;
-    if (texture.id) {
-      texture.sync();
-    }
+    texture.loaded = true;    
   };
   this.image.src = this.url;
 }
@@ -51,9 +47,11 @@ pkzo.Texture.prototype.release = function () {
   this.id = null;
 }
 
-pkzo.Texture.prototype.bind = function () {
+pkzo.Texture.prototype.bind = function (gl, channel) {
+	this.gl = gl;
   if (! this.id) {
     this.upload();
   }
+	// TODO channel
   this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
 }

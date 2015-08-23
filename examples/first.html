@@ -27,9 +27,14 @@
     
     // TODO load manager?
     var box      = new pkzo.Mesh.box(pkzo.vec3(1, 1, 1));
+    
     var material = new pkzo.Material();
-    var object   = new pkzo.Object(box, material);    
-    object.setPosition(pkzo.vec3(0, 0, -5));
+    material.color = pkzo.vec3(1, 0.5, 0.5);
+    // FIXME, pkzo, must be able to run without gl in the contructor
+    material.texture = new pkzo.Texture('textures/WhiteBricks.jpg');
+    
+    var object   = new pkzo.Object(box, material);        
+    object.setPosition(pkzo.vec3(0, 0, -5));    
     scene.add(object);
     
     var camera = new pkzo.Camera();
@@ -38,7 +43,7 @@
     scene.add(camera);
 
     var render = function () {
-      renderer.render(scene, camera);
+      renderer.render(scene, camera);      
       requestAnimationFrame(render);
     };
 

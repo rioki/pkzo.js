@@ -14,6 +14,8 @@ pkzo.Renderer.prototype.render = function (scene, camera) {
 	
   this.canvas.draw(function (gl) {
     
+		gl.enable(gl.DEPTH_TEST);
+		
 		var shader = renderer.solidShader;		
 		shader.bind();
 		
