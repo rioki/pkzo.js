@@ -1,5 +1,7 @@
 
-pkzo.Scene = function () {}
+pkzo.Scene = function () {
+	this.ambientLight = pkzo.vec3(0.2, 0.2, 0.2);	
+}
 
 pkzo.Scene.prototype.enqueue = function (renderer) {
 	if (this.entities) {

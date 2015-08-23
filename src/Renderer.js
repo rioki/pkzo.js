@@ -6,6 +6,7 @@ pkzo.Renderer = function (canvas) {
   
   this.canvas.init(function (gl) {
     renderer.solidShader = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.SolidFrag);
+		renderer.ambientShader = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.AmbientFrag);
   });
 }
 
@@ -23,6 +24,23 @@ pkzo.Renderer.prototype.addMesh = function (transform, material, mesh) {
 	});
 }
 
+pkzo.Renderer.prototype.ambientPass = function (gl, ambientLight) {
+	var shader = renderer.ambientShader;		
+	shader.bind();
+	
+	shader.setUniformMatrix4fv('uProjectionMatrix', renderer.projectionMatrix);		
+	shader.setUniformMatrix4fv('uViewMatrix',       renderer.viewMatrix);		
+	shader.setUniformMatrix3fv('uNormalMatrix',     renderer.normalMatrix);		
+	
+	shader.setUniform3fv('uAmbientLight', ambientLight);		
+		
+	renderer.solids.forEach(function (solid) {
+		shader.setUniformMatrix4fv('uModelMatrix', solid.transform);		
+		solid.material.setup(gl, shader);			
+		solid.mesh.draw(gl, shader);
+	});
+}
+
 pkzo.Renderer.prototype.render = function (scene) {
 	var renderer = this;
 	
@@ -33,7 +51,9 @@ pkzo.Renderer.prototype.render = function (scene) {
     
 		gl.enable(gl.DEPTH_TEST);
 		
-		var shader = renderer.solidShader;		
+		renderer.ambientPass(gl, scene.ambientLight);
+		
+		/*var shader = renderer.solidShader;		
 		shader.bind();
 		
 		shader.setUniformMatrix4fv('uProjectionMatrix', renderer.projectionMatrix);		
@@ -45,6 +65,6 @@ pkzo.Renderer.prototype.render = function (scene) {
 			shader.setUniformMatrix4fv('uModelMatrix', solid.transform);		
 			solid.material.setup(gl, shader);			
 			solid.mesh.draw(gl, shader);
-		});
+		});*/
   });
 }
