@@ -9,8 +9,19 @@ pkzo.Renderer = function (canvas) {
   });
 }
 
+pkzo.Renderer.prototype.addMesh = function (transform, material, mesh) {
+	this.solids.push({
+		transform: transform,
+		material: material, 
+		mesh: mesh
+	});
+}
+
 pkzo.Renderer.prototype.render = function (scene, camera) {
 	var renderer = this;
+	
+	this.solids = [];
+	scene.enqueue(this);
 	
   this.canvas.draw(function (gl) {
     
@@ -25,15 +36,11 @@ pkzo.Renderer.prototype.render = function (scene, camera) {
 		shader.setUniformMatrix4fv('uViewMatrix',       camera.viewMatrix);		
 		shader.setUniformMatrix3fv('uNormalMatrix',     camera.normalMatrix);		
 		
-		var modelViewMatrix = pkzo.mat4(camera.viewMatrix);		
 		
-		if (scene.entities) {
-			scene.entities.forEach(function (entity) {
-				if (entity.draw) {
-					entity.draw(gl, shader, modelViewMatrix);
-				}				
-			});
-		}
-		
+		renderer.solids.forEach(function (solid) {
+			shader.setUniformMatrix4fv('uModelMatrix', solid.transform);		
+			solid.material.setup(gl, shader);			
+			solid.mesh.draw(gl, shader);
+		});
   });
 }

@@ -9,6 +9,11 @@ pkzo.Object = function (mesh, material) {
 pkzo.Object.prototype = Object.create(pkzo.Entity.prototype);
 pkzo.Object.prototype.constructor = pkzo.Object;
 
+pkzo.Object.prototype.enqueue = function (renderer) {
+	// todo respect parent transform
+	renderer.addMesh(this.transform, this.material, this.mesh);
+}
+
 pkzo.Object.prototype.draw = function (gl, shader, parentModelViewMatrix) { 
   
   var modelViewMatrix = pkzo.multMatrix(parentModelViewMatrix, this.transform);

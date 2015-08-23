@@ -13,6 +13,10 @@ pkzo.Camera = function (opt) {
 pkzo.Camera.prototype = Object.create(pkzo.Entity.prototype);
 pkzo.Camera.prototype.constructor = pkzo.Camera;
 
+pkzo.Camera.prototype.enqueue = function (renderer) {
+	// something, something, renderer.setCamera
+}
+
 pkzo.Camera.prototype.update = function () {
 	// TODO take into account the paren't position
 	
