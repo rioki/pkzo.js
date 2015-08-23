@@ -9,6 +9,12 @@ pkzo.Renderer = function (canvas) {
   });
 }
 
+pkzo.Renderer.prototype.setCamera = function (projectionMatrix, viewMatrix, normalMatrix) {
+	this.projectionMatrix = projectionMatrix;
+	this.viewMatrix      = viewMatrix;
+	this.normalMatrix    = normalMatrix;
+}
+
 pkzo.Renderer.prototype.addMesh = function (transform, material, mesh) {
 	this.solids.push({
 		transform: transform,
@@ -17,7 +23,7 @@ pkzo.Renderer.prototype.addMesh = function (transform, material, mesh) {
 	});
 }
 
-pkzo.Renderer.prototype.render = function (scene, camera) {
+pkzo.Renderer.prototype.render = function (scene) {
 	var renderer = this;
 	
 	this.solids = [];
@@ -30,11 +36,9 @@ pkzo.Renderer.prototype.render = function (scene, camera) {
 		var shader = renderer.solidShader;		
 		shader.bind();
 		
-		camera.aspect = gl.width / gl.height;
-		camera.update();
-		shader.setUniformMatrix4fv('uProjectionMatrix', camera.projectionMatrix);		
-		shader.setUniformMatrix4fv('uViewMatrix',       camera.viewMatrix);		
-		shader.setUniformMatrix3fv('uNormalMatrix',     camera.normalMatrix);		
+		shader.setUniformMatrix4fv('uProjectionMatrix', renderer.projectionMatrix);		
+		shader.setUniformMatrix4fv('uViewMatrix',       renderer.viewMatrix);		
+		shader.setUniformMatrix3fv('uNormalMatrix',     renderer.normalMatrix);		
 		
 		
 		renderer.solids.forEach(function (solid) {
