@@ -30,6 +30,7 @@ var libsrcs = [
   'src/Entity.js',
   'src/Camera.js',
   'src/Object.js',
+	'src/DirectionalLight.js',
   'src/Renderer.js'  
 ];
 

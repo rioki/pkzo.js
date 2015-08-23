@@ -1,22 +1,13 @@
 
-pkzo.mat2 = function (v) {
-  if (typeof v === 'array') {
-    if (v.length != 4) {
-      throw new Error('mat2 must be 4 values');
-    }
-    return new Float32Array(v);
-  }
-  if (typeof v === 'number') {
-    return new Float32Array([v, 0,
-                             0, v]);
-  }
-  return new Float32Array([1, 0,
-                           0, 1]);
-}
-
 pkzo.mat3 = function (v) {
-  if (typeof v === 'array') {
-    if (v.length != 9) {
+  if (typeof v === 'array' || v instanceof Float32Array) {
+    if (v.length == 16) {
+			// down case from mat4
+			return new Float32Array([v[0], v[1], v[2],
+                               v[4], v[5], v[6],
+                               v[8], v[9], v[10]]);
+		}
+		if (v.length != 9) {
       throw new Error('mat3 must be 9 values');
     }
     return new Float32Array(v);

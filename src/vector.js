@@ -47,6 +47,14 @@ pkzo.vec4 = function (v0, v1, v2, v4) {
   }
 }
 
+pkzo.neg = function (v) {
+  var r = new Float32Array(v.length);
+  for (var i = 0; i < v.length; i++) {
+    r[i] = -v[i];
+  }
+  return r;
+}
+
 // add and sub also work for matrix
 pkzo.add = function (a, b) {
   var r = new Float32Array(a.length);
@@ -100,3 +108,18 @@ pkzo.normalize = function (v) {
   return pkzo.multVectorScalar(v, 1 / pkzo.length(v));
 }
 
+pkzo.multMatrixVector = function (m, v) {
+	var n = v.length;
+	var r = new Float32Array(n);
+	
+	for (var i = 0; i < n; i++)
+	{
+		r[i] = 0;
+		for (var j = 0; j < n; j++)
+		{
+				r[i] += m[i*n+j] * v[j];
+		}
+	}
+	
+	return r;
+}
