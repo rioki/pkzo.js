@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>First pkzo.js Example</title>
+  <style>
+    html, body {
+        width: 100%;
+        height: 100%;       
+        padding: 0;
+        margin: 0;
+    }
+    #example { 
+        width: 100%;
+        height: 100%;
+        background: silver;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="example"></canvas>  
+  <script src="../dist/pkzo-0.0.1.js"></script>
+  <script>
+    var renderer = new pkzo.Renderer('example');
+    
+    var scene = new pkzo.Scene();
+    
+    // TODO load manager?
+    var box      = new pkzo.Mesh.box(pkzo.vec3(1, 1, 1));
+    var material = new pkzo.Material();
+    var object   = new pkzo.Object(box, material);    
+    object.setPosition(pkzo.vec3(0, 0, -5));
+    scene.add(object);
+    
+    var camera = new pkzo.Camera();
+    //camera.setPosition(pkzo.vec3(-10, 0, 5));
+    //camera.lookAt(object.getPosition(), pkzo.vec3(0, 0, 1));
+    scene.add(camera);
+
+    var render = function () {
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    };
+
+    render();    
+  </script>
+</body>
+</html>
+
