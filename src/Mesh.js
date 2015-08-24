@@ -1,6 +1,40 @@
 
 pkzo.Mesh = function () {}
 
+pkzo.Mesh.plane = function (width, height, wres, hres) {
+	var mesh = new pkzo.Mesh();
+	
+	var w2 = width / 2.0;
+	var h2 = height / 2.0;
+	var ws = width / wres;
+	var hs = height / hres;
+	var ts = 1.0 / wres;
+	var ss = 1.0 / hres;
+	
+	for (var i = 0; i <= wres; i++) {
+		for (var j = 0; j <= hres; j++) {
+			var x = -w2 + i * ws; 
+			var y = -h2 + j * hs;
+			var t = i * ts;
+			var s = j * ss;
+			mesh.addVertex(pkzo.vec3(x, y, 0), pkzo.vec3(0, 0, 1), pkzo.vec2(t, s));						
+		}
+	}
+	
+	for (var i = 0; i < wres; i++) {
+		for (var j = 0; j < hres; j++) {
+			var a = (i + 0) * wres + (j + 0);
+			var b = (i + 0) * wres + (j + 1);
+			var c = (i + 1) * wres + (j + 1);
+			var d = (i + 1) * wres + (j + 0);
+			mesh.addTriangle(a, b, c);
+			mesh.addTriangle(c, d, b);
+		}
+	}
+	
+	return mesh;
+}
+
 pkzo.Mesh.box = function (s) {
 	
 	var mesh = new pkzo.Mesh();
@@ -45,6 +79,38 @@ pkzo.Mesh.load = function (file) {
 	var mesh = new pkzo.Mesh();
 	
 	return mesh;
+}
+
+pkzo.Mesh.prototype.addVertex = function (vertex, normal, texCoord) {
+	if (this.vertices) {
+		this.vertices.push([vertex[0], vertex[1], vertex[2]]);
+	}
+	else {
+		this.vertices = [vertex[0], vertex[1], vertex[2]];
+	}
+	
+	if (this.normals) {
+		this.normals.push([normal[0], normal[1], normal[2]]);
+	}
+	else {
+		this.normals = [normal[0], normal[1], normal[2]];
+	}
+	
+	if (this.texCoords) {
+		this.texCoords.push([texCoord[0], texCoord[1], texCoord[2]]);
+	}
+	else {
+		this.texCoords = [texCoord[0], texCoord[1], texCoord[2]];
+	}
+}
+
+pkzo.Mesh.prototype.addTriangle = function (a, b, c) {
+	if (this.indices) {
+		this.indices.push([a, b, c]);
+	}
+	else {
+		this.indices = [a, b, c];
+	}
 }
 
 pkzo.Mesh.prototype.upload = function (gl) {

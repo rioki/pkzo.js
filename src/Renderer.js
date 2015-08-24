@@ -11,10 +11,9 @@ pkzo.Renderer = function (canvas) {
   });
 }
 
-pkzo.Renderer.prototype.setCamera = function (projectionMatrix, viewMatrix, normalMatrix) {
+pkzo.Renderer.prototype.setCamera = function (projectionMatrix, viewMatrix) {
 	this.projectionMatrix = projectionMatrix;
-	this.viewMatrix      = viewMatrix;
-	this.normalMatrix    = normalMatrix;
+	this.viewMatrix       = viewMatrix;
 }
 
 pkzo.Renderer.prototype.addMesh = function (transform, material, mesh) {
@@ -53,15 +52,10 @@ pkzo.Renderer.prototype.ambientPass = function (gl, ambientLight) {
 	
 	shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);		
 	shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);		
-	shader.setUniformMatrix3fv('uNormalMatrix',     this.normalMatrix);		
 	
 	shader.setUniform3fv('uAmbientLight', ambientLight);		
 		
-	this.solids.forEach(function (solid) {
-		shader.setUniformMatrix4fv('uModelMatrix', solid.transform);		
-		solid.material.setup(gl, shader);			
-		solid.mesh.draw(gl, shader);
-	});
+	this.drawSolids(gl, shader);	
 }
 
 pkzo.Renderer.prototype.lightPass = function (gl, light) {
@@ -70,7 +64,6 @@ pkzo.Renderer.prototype.lightPass = function (gl, light) {
 	
 	shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);		
 	shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);		
-	shader.setUniformMatrix3fv('uNormalMatrix',     this.normalMatrix);		
 	
 	shader.setUniform1f('uLightType', light.type);
 	// direction is in eye space
@@ -79,13 +72,7 @@ pkzo.Renderer.prototype.lightPass = function (gl, light) {
 	shader.setUniform3fv('uLightColor', light.color);
 	
 	this.drawSolids(gl, shader);	
-	/*his.solids.forEach(function (solid) {
-		shader.setUniformMatrix4fv('uModelMatrix', solid.transform);		
-		solid.material.setup(gl, shader);			
-		solid.mesh.draw(gl, shader);
-	});*/
 }
-
 
 pkzo.Renderer.prototype.render = function (scene) {
 	var renderer = this;

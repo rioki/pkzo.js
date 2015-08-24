@@ -1,6 +1,14 @@
 
-pkzo.Material = function () {	
-	this.color = pkzo.vec3(1, 1, 1);
+pkzo.Material = function (opts) {	
+	if (opts.color) {
+		this.color = opts.color;
+	}
+	else {
+		this.color = pkzo.vec3(1, 1, 1);
+	}	
+	if (opts.texture) {
+		this.texture = opts.texture;
+	}	
 }
 
 pkzo.Material.prototype.setup = function (gl, shader) {

@@ -1,13 +1,12 @@
 
 pkzo.mat3 = function (v) {
-  if (typeof v === 'array' || v instanceof Float32Array) {
-    if (v.length == 16) {
-			// down case from mat4
+  if (v && v.length && v.length == 16) {
 			return new Float32Array([v[0], v[1], v[2],
                                v[4], v[5], v[6],
                                v[8], v[9], v[10]]);
-		}
-		if (v.length != 9) {
+	}
+	if (v && v.length) {
+    if (v.length != 9) {
       throw new Error('mat3 must be 9 values');
     }
     return new Float32Array(v);
@@ -23,7 +22,7 @@ pkzo.mat3 = function (v) {
 }
 
 pkzo.mat4 = function (v) {
-  if (typeof v === 'array') {
+  if (v && v.length) {    
     if (v.length != 16) {
       throw new Error('mat4 must be 16 values');
     }
@@ -187,6 +186,19 @@ pkzo.scale = function(m, x, y, z) {
   r[13] = m[13];
   r[14] = m[14];
   r[15] = m[15];
+  
+  return r;
+}
+
+pkzo.transpose = function(m) {    
+  var n = Math.sqrt(m.length);
+  var r = new Float32Array(m.length);
+  
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      r[j*n+i] = m[i*n+j];
+    }
+  }
   
   return r;
 }

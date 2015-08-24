@@ -20,21 +20,18 @@
 <body>
   <canvas id="example"></canvas>  
   <script src="../dist/pkzo-0.0.1.js"></script>
+  <script src="js/FlyController.js"></script>
   <script>
     var renderer = new pkzo.Renderer('example');
     
     var scene = new pkzo.Scene();
     
-    // TODO load manager?
-    var box      = new pkzo.Mesh.box(pkzo.vec3(1, 1, 1));
-    
-    var material = new pkzo.Material();
-    material.texture = new pkzo.Texture('textures/WhiteBricks.jpg');
-    
-    var object   = new pkzo.Object(box, material);        
-    object.setPosition(pkzo.vec3(0, 0, -5));    
-    object.rotate(45.0, 0.25, 0.75, 1.0);
-    scene.add(object);
+    //var groundMesh    = pkzo.Mesh.plane(20, 20, 20, 20);
+    var groundMesh    = pkzo.Mesh.box(pkzo.vec3(20, 20, 0.1));
+    var grassMaterial = new pkzo.Material({texture: new pkzo.Texture('textures/Grass.jpg')});
+    var ground        = new pkzo.Object(groundMesh, grassMaterial);
+    ground.setPosition(pkzo.vec3(0, 0, 0));    
+    scene.add(ground);
     
     var light0 = new pkzo.DirectionalLight();    
     light0.color = pkzo.vec3(0.5, 0.5, 1.0);
@@ -42,13 +39,12 @@
     scene.add(light0);    
     
     var camera = new pkzo.Camera();
-    //camera.setPosition(pkzo.vec3(-10, 0, 5));
-    //camera.lookAt(object.getPosition(), pkzo.vec3(0, 0, 1));
+    var controller = new FlyController(camera);
     scene.add(camera);
-
+    
     var render = function () {
-      object.rotate(1.0, 0.25, 0.75, 1.0);
-      light0.rotate(1, 0, 1, 0);
+      controller.sync();
+            
       renderer.render(scene);      
       requestAnimationFrame(render);
     };
