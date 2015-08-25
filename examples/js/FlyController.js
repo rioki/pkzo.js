@@ -7,7 +7,7 @@ function FlyController(entity, domElement) {
   this.lastX         = 0.0;
   this.lastY         = 0.0;  
   this.rotate        = false;  
-  this.position      = pkzo.vec3(0, 0, 10); 
+  this.position      = pkzo.vec3(0, 0, 0); 
   this.moveForward   = false;
   this.moveBackwards = false;
   this.moveLeft      = false;
@@ -25,7 +25,7 @@ function FlyController(entity, domElement) {
     
     if (controller.rotate) {
       controller.yaw -= dx;
-      controller.pitch += dy;
+      controller.pitch -= dy;
       
       controller.sync();
     }

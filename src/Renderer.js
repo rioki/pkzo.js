@@ -67,8 +67,8 @@ pkzo.Renderer.prototype.lightPass = function (gl, light) {
 	
 	shader.setUniform1f('uLightType', light.type);
 	// direction is in eye space
-	var dir = pkzo.multMatrixVector(pkzo.mat3(this.viewMatrix), light.direction);
-	shader.setUniform3fv('uLightDirection', dir);
+	//var dir = pkzo.multMatrixVector(pkzo.mat3(this.viewMatrix), light.direction);
+	shader.setUniform3fv('uLightDirection', light.direction);
 	shader.setUniform3fv('uLightColor', light.color);
 	
 	this.drawSolids(gl, shader);	
