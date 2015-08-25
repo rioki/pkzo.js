@@ -9,6 +9,7 @@ uniform vec3  uLightColor;
 uniform vec3  uLightDirection;
 uniform vec3  uLightPosition;
 uniform float uLightRange;
+uniform float uLightCutoff;
 
 varying vec3 vNormal;
 varying vec2 vTexCoord;
@@ -36,6 +37,19 @@ void main() {
         }
         lightDirection = normalize(lightDirection);
         atten = 1.0 - (dist / uLightRange);    
+    }
+    if (uLightType == 3) {
+        lightDirection = uLightPosition - vPosition;
+        float dist = length(lightDirection);
+        if (dist > uLightRange) {
+            discard;
+        }
+        lightDirection = normalize(lightDirection);
+        atten = 1.0 - (dist / uLightRange);    
+        
+        if (dot(lightDirection, -uLightDirection) < uLightCutoff) {
+            discard;
+        }  
     }
     
     vec3 result = vec3(0);    

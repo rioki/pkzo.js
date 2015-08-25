@@ -26,6 +26,7 @@ pkzo.Renderer.prototype.addMesh = function (transform, material, mesh) {
 
 pkzo.DIRECTIONAL_LIGHT = 1;
 pkzo.POINT_LIGHT			 = 2;
+pkzo.SPOT_LIGHT			   = 3;
 
 pkzo.Renderer.prototype.addDirectionalLight = function (direction, color) {
 	this.lights.push({
@@ -43,6 +44,18 @@ pkzo.Renderer.prototype.addPointLight = function (position, color, range) {
 		range: range
 	});
 }
+
+pkzo.Renderer.prototype.addSpotLight = function (position, direction, color, range, cutoff) {
+	this.lights.push({
+		type: pkzo.SPOT_LIGHT,
+		position: position,
+    direction: direction,
+		color: color,
+		range: range,
+    cutoff: cutoff
+	});
+}
+
 
 pkzo.Renderer.prototype.drawSolids = function (gl, shader) {
 	this.solids.forEach(function (solid) {
@@ -84,6 +97,9 @@ pkzo.Renderer.prototype.lightPass = function (gl, light) {
 	}
 	if (light.range) {
 		shader.setUniform1f('uLightRange', light.range);
+	}
+  if (light.cutoff) {
+		shader.setUniform1f('uLightCutoff', light.cutoff);
 	}
 	shader.setUniform3fv('uLightColor', light.color);
 	
