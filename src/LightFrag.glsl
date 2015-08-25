@@ -4,33 +4,45 @@ uniform vec3      uColor;
 uniform sampler2D uTexture;
 uniform bool      uHasTexture;
 
-uniform int  uLightType; // 1: directional, 2: point, 3: spot
-uniform vec3 uLightColor;
-// this may need to multiplied by the view matrix?
-uniform vec3 uLightDirection;
+uniform int   uLightType; // 1: directional, 2: point, 3: spot
+uniform vec3  uLightColor;
+uniform vec3  uLightDirection;
+uniform vec3  uLightPosition;
+uniform float uLightRange;
 
 varying vec3 vNormal;
 varying vec2 vTexCoord;
+varying vec3 vPosition;
 
-void main()
-{
+void main() {
     vec3 color = uColor;    
     if (uHasTexture) {
         color = color * texture2D(uTexture, vTexCoord).rgb;
     }
     
-    vec3 result = vec3(0);
-    vec3 n = normalize(vNormal);
-    //vec3 e = normalize(-vPosition);
-    vec3 l = normalize(-uLightDirection);
-    float atten = 1.0;
+    vec3 normal = normalize(vNormal);
     
-    float nDotL = dot(n, l);
+    vec3 lightDirection;
+    float atten;
+    if (uLightType == 1) {
+        lightDirection = normalize(-uLightDirection);
+        atten = 1.0;
+    }
+    if (uLightType == 2) {
+        lightDirection = uLightPosition - vPosition;
+        float dist = length(lightDirection);
+        if (dist > uLightRange) {
+            discard;
+        }
+        lightDirection = normalize(lightDirection);
+        atten = 1.0 - (dist / uLightRange);    
+    }
+    
+    vec3 result = vec3(0);    
+    float nDotL = dot(normal, lightDirection);
     if (nDotL > 0.0) {    
         result += nDotL * color * uLightColor * atten;
     }
-    
-    //result += color * uLightColor;
-    
+        
     gl_FragColor = vec4(result, 1);
 }                           

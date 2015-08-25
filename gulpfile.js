@@ -31,6 +31,7 @@ var libsrcs = [
   'src/Camera.js',
   'src/Object.js',
 	'src/DirectionalLight.js',
+  'src/PointLight.js',
   'src/Renderer.js'  
 ];
 
