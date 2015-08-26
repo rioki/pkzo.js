@@ -10,6 +10,7 @@ var rename     = require('gulp-rename');
 var http       = require('http');
 var ecstatic   = require('ecstatic');
 var sourcemaps = require('gulp-sourcemaps');
+var peg        = require('gulp-peg');
 var glsl       = require('./gulp-glsl');
 
 var VERSION = '0.0.1';
@@ -25,6 +26,7 @@ var libsrcs = [
 	'src/Shader.js',
   'src/Scene.js',
 	'src/Buffer.js',
+  'src/PlyParser.js',
   'src/Mesh.js',
   'src/Material.js',
   'src/Entity.js',
@@ -42,7 +44,13 @@ gulp.task('glsl', function () {
     .pipe(gulp.dest('./src/'));
 });
 
-gulp.task('library', ['glsl'], function() {
+gulp.task('PlyParser', function () {
+  return gulp.src('src/PlyParser.peg')
+    .pipe(peg({exportVar: 'pkzo.PlyParser'}))
+    .pipe(gulp.dest('./src/'));
+});
+
+gulp.task('library', ['glsl', 'PlyParser'], function() {
   return gulp.src(libsrcs)
 		.pipe(sourcemaps.init())
     .pipe(concat('pkzo-' + VERSION + '.js'))

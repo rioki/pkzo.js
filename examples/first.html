@@ -32,85 +32,54 @@
     var renderer = new pkzo.Renderer('example');
     
     var scene  = new pkzo.Scene();
+    scene.ambientLight = pkzo.vec3(0.02, 0.02, 0.02)
     
     var white  = new pkzo.Material({color: pkzo.vec3(1, 1, 1)});
-    var column = pkzo.Mesh.box(pkzo.vec3(1.0, 1.0, 3.0));
+    
         
-    var ground = new pkzo.Object(pkzo.Mesh.box(pkzo.vec3(20, 20, 1)), white); 
-    ground.setPosition(pkzo.vec3(0, 0, -0.5));
+    var ground = new pkzo.Object(pkzo.Mesh.plane(20, 20, 4, 4), new pkzo.Material({texture: new pkzo.Texture('textures/Marble.jpg')})); 
     scene.add(ground);
     
-    var column00 = new pkzo.Object(column, white);
-    column00.setPosition(pkzo.vec3(-5.0, -5.0, 1.5));
-    scene.add(column00);
+    var pedestal = new pkzo.Object(pkzo.Mesh.box(pkzo.vec3(0.25, 0.25, 0.5)), white); 
+    pedestal.setPosition(pkzo.vec3(0.0, 0.0, 0.5));
+    scene.add(pedestal);
+
+    var teapot = new pkzo.Object(pkzo.Mesh.load('meshes/Teapot.ply'), white);
+    teapot.setPosition(pkzo.vec3(0, 0, 1.0));
+    scene.add(teapot);
     
-    var column10 = new pkzo.Object(column, white);
-    column10.setPosition(pkzo.vec3(0.0, -5.0, 1.5));
-    scene.add(column10);
-    
-    var column20 = new pkzo.Object(column, white);
-    column20.setPosition(pkzo.vec3(5.0, -5.0, 1.5));
-    scene.add(column20);
-    
-    var column01 = new pkzo.Object(column, white);
-    column01.setPosition(pkzo.vec3(-5.0, 0.0, 1.5));
-    scene.add(column01);
-    
-    var column11 = new pkzo.Object(column, white);
-    column11.setPosition(pkzo.vec3(0.0, 0.0, 1.5));
-    scene.add(column11);
-    
-    var column21 = new pkzo.Object(column, white);
-    column21.setPosition(pkzo.vec3(5.0, 0.0, 1.5));
-    scene.add(column21);
-    
-    var column02 = new pkzo.Object(column, white);
-    column02.setPosition(pkzo.vec3(-5.0, 5.0, 1.5));
-    scene.add(column02);
-    
-    var column12 = new pkzo.Object(column, white);
-    column12.setPosition(pkzo.vec3(0.0, 5.0, 1.5));
-    scene.add(column12);
-    
-    var column22 = new pkzo.Object(column, white);
-    column22.setPosition(pkzo.vec3(5.0, 5.0, 1.5));
-    scene.add(column22);
-        
-    var light0 = new pkzo.DirectionalLight();    
-    light0.color = pkzo.vec3(0.25, 0.25, 0.5);
-    light0.rotate(10, 0, 1, 0);
-    scene.add(light0);
-    
-    var light1 = new pkzo.PointLight();
-    light1.color = pkzo.vec3(1.0, 0.5, 0.5);
-    light1.range = 10;
-    light1.setPosition(pkzo.vec3(-2.5, -2.5, 1.5));
+    // spotlight
+    var light1 = new pkzo.SpotLight();
+    light1.color  = pkzo.vec3(1.0, 1.0, 0.8);
+    light1.range  = 10;
+    light1.cutoff = 0.9;
+    light1.translate(1.5, -1.0, 3.0);        
+    light1.rotate(30, 1, 0, 0);        
+    light1.rotate(45, 0, 0, 1);
     scene.add(light1);
     
-    var light2 = new pkzo.SpotLight();
-    light2.color  = pkzo.vec3(0.5, 1.0, 0.5);
-    light2.range  = 25;
-    light2.cutoff = 0.5;
-    light2.setPosition(pkzo.vec3(2.5, 2.5, 1.5));        
+    // fake ambient glow
+    var light2 = new pkzo.PointLight();
+    light2.color  = pkzo.vec3(0.25, 0.2, 0.125);
+    light2.range  = 7.5;    
+    light2.translate(0.0, 0.0, 2.5);        
     scene.add(light2);
     
     var camera = new pkzo.Camera();
     var controller = new FlyController(camera);
-    controller.position = pkzo.vec3(-4.0, -8.0, 1.8);
+    controller.position = pkzo.vec3(0.0, -2.0, 1.8);
+    controller.pitch    = 75.0;
     scene.add(camera);
     
     var render = function () {
       stats.begin();
-      light0.rotate(0.5, 0.5, 1, 0);
-      light2.rotate(0.75, 0.25, 0.75, 0);
       controller.sync();
-            
-      renderer.render(scene);      
-      requestAnimationFrame(render);
+      renderer.render(scene);            
       stats.end();
+      requestAnimationFrame(render);
     };
 
-    render();    
+    render();        
   </script>
 </body>
 </html>

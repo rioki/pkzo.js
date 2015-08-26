@@ -1,0 +1,150 @@
+
+{
+  var lines      = 0;
+  var mesh       = options.mesh;
+  var elements   = [];
+  var elementIds = 0; // currently active element
+  var valueCount = 0; // which value was read last, within this element
+  
+  function strJoin(values) {
+    var r = '';
+    values.forEach(function (value) {
+      if (value != null) {
+        if (typeof value === 'string') {       
+          r = r.concat(value);
+        }
+        else {          
+          r = r.concat(strJoin(value));
+        }
+      }
+    });
+    return r;
+  }
+  
+  function decodeLine(values) {
+    var props = elements[elementIds].properties;
+    
+    if (props[0] == 'vertex_indices') {
+      var count = values[0];
+      // anything larger than a triangle is basically  
+      // implemented as a triangle fan
+      for (var i = 2; i < count; i++) {
+        // actual usable values start with 1
+        var a = values[1];        
+        var b = values[i];
+        var c = values[i + 1];
+        mesh.addTriangle(a, b, c);
+      }      
+    }
+    else {    
+      var vertex   = pkzo.vec3(0);
+      var normal   = pkzo.vec3(0);
+      var texCoord = pkzo.vec2(0);
+      props.forEach(function (prop, i) {
+        switch (prop) {
+          case 'x':
+            vertex[0] = values[i];
+            break;
+          case 'y':
+            vertex[1] = values[i];
+            break;
+          case 'z':
+            vertex[2] = values[i];
+            break;
+          case 'nx':
+            normal[0] = values[i];
+            break;
+          case 'ny':
+            normal[1] = values[i];
+            break;
+          case 'nz':
+            normal[2] = values[i];
+            break;  
+          case 't':
+            texCoord[0] = values[i];
+            break;
+          case 's':
+            texCoord[1] = values[i];
+            break;
+        }        
+      });
+      mesh.addVertex(vertex, normal, texCoord);
+    };
+    
+    valueCount++;
+    if (valueCount == elements[elementIds].count) {
+      elementIds++;
+      valueCount = 0;
+    }
+  }
+}
+
+ply =
+    magic header body
+    
+magic =
+    "ply" nl
+    
+header =
+    format comment* element+ "end_header" nl
+    
+format =
+    "format" ws "ascii" ws "1.0" nl    
+
+comment = 
+    "comment" [^\n\r]* nl
+    
+element =    
+    a:ehader b:property+ {a.properties = b; elements.push(a);}
+    
+ehader =     
+    "element" ws a:eltype ws b:number nl {return {type: a, count: b};}
+
+eltype =
+    "vertex" / 
+    "face"
+   
+property = 
+    "property" ws ptype ws a:pvalue nl {return a;}
+
+// NOTE: ignore actualy types, since for us everything is a "number"    
+ptype = 
+    "float" /
+    "uint" /
+    "int" /
+    "uchar" /
+    "char" /
+    list
+   
+list =
+    "list" ws ptype ws ptype
+    
+pvalue =
+    "x" /
+    "y" /
+    "z" /
+    "nx" /
+    "ny" /
+    "nz" /
+    "s" /
+    "t" /
+    "vertex_indices"
+   
+body =
+    bline+ 
+    
+bline =
+    a:bvalue+ nl {decodeLine(a);}
+
+bvalue =
+    a:number ws? {return a;}
+    
+number = 
+    a:('-'?[0-9]+('.'[0-9]*)?) {return parseFloat(strJoin(a));}
+    
+ws =
+    [ \t\v]+
+    
+nl =
+    ("\r\n" / "\n" / "\r") {lines++}
+   
