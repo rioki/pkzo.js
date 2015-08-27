@@ -94,16 +94,16 @@ FlyController.prototype.sync = function () {
   
   var dv  = pkzo.vec3(0, 0, 0);
   if (this.moveForward) {
-    dv = pkzo.add(dv, pkzo.neg(pkzo.multVectorScalar(this.entity.getZVector(), this.speed * dt)));
+    dv = pkzo.add(dv, pkzo.neg(pkzo.svmult(this.entity.getZVector(), this.speed * dt)));
   }
   if (this.moveBackwards) {
-    dv = pkzo.add(dv, pkzo.multVectorScalar(this.entity.getZVector(), this.speed * dt));
+    dv = pkzo.add(dv, pkzo.svmult(this.entity.getZVector(), this.speed * dt));
   }
   if (this.moveLeft) {
-    dv = pkzo.add(dv, pkzo.neg(pkzo.multVectorScalar(this.entity.getXVector(), this.speed * dt)));
+    dv = pkzo.add(dv, pkzo.neg(pkzo.svmult(this.entity.getXVector(), this.speed * dt)));
   }
   if (this.moveRight) {
-    dv = pkzo.add(dv, pkzo.multVectorScalar(this.entity.getXVector(), this.speed * dt));
+    dv = pkzo.add(dv, pkzo.svmult(this.entity.getXVector(), this.speed * dt));
   }
   this.position = pkzo.add(this.position, dv);
   

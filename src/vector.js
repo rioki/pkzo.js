@@ -92,7 +92,7 @@ pkzo.cross = function (a, b) {
   return r;
 }
 
-pkzo.multVectorScalar = function (v, s) {
+pkzo.svmult = function (v, s) {
   var r = new Float32Array(v.length);
   for (var i = 0; i < v.length; i++) {
     r[i] = v[i] * s;
@@ -105,7 +105,7 @@ pkzo.length = function (v) {
 }
 
 pkzo.normalize = function (v) {
-  return pkzo.multVectorScalar(v, 1 / pkzo.length(v));
+  return pkzo.svmult(v, 1 / pkzo.length(v));
 }
 
 pkzo.multMatrixVector = function (m, v) {

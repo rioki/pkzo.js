@@ -40,6 +40,10 @@ pkzo.Material.prototype.read = function (data) {
   if (data.roughnessMap) {
     this.roughnessMap = pkzo.Texture.load(data.roughnessMap);
   }
+  
+  if (data.normalMap) {
+    this.normalMap = pkzo.Texture.load(data.normalMap);
+  }
 }
 
 pkzo.Material.prototype.setup = function (gl, shader) {
@@ -58,12 +62,21 @@ pkzo.Material.prototype.setup = function (gl, shader) {
   shader.setUniform1f('uRoughness', this.roughness);
   if (this.roughnessMap && this.roughnessMap.loaded) {
     shader.setUniform1i('uHasRoughnessMap', 1);
-		this.texture.bind(gl, 1)
+		this.roughnessMap.bind(gl, 1)
 		shader.setUniform1i('uRoughnessMap', 1);
   }
   else {
     shader.setUniform1i('uHasRoughnessMap', 0);
   }
+  
+  if (this.normalMap && this.normalMap.loaded) {
+		shader.setUniform1i('uHasNormalMap', 1);
+		this.normalMap.bind(gl, 2)
+		shader.setUniform1i('uNormalMap', 2);
+	}
+	else {
+		shader.setUniform1i('uHasNormalMap', 0);
+	}	
 }
 
 

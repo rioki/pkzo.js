@@ -6,6 +6,8 @@ uniform sampler2D uTexture;
 uniform float     uRoughness;
 uniform bool      uHasRoughnessMap;
 uniform sampler2D uRoughnessMap;
+uniform bool      uHasNormalMap;
+uniform sampler2D uNormalMap;
 
 uniform int   uLightType; // 1: directional, 2: point, 3: spot
 uniform vec3  uLightColor;
@@ -18,6 +20,7 @@ varying vec3 vNormal;
 varying vec2 vTexCoord;
 varying vec3 vPosition;
 varying vec3 vEye;
+varying mat3 vTBN;
 
 void main() {
     vec3 color = uColor;    
@@ -25,7 +28,13 @@ void main() {
         color = color * texture2D(uTexture, vTexCoord).rgb;
     }
     
-    vec3 normal = normalize(vNormal);
+    vec3 normal;
+    if (uHasNormalMap) {
+        normal = normalize(vTBN * texture2D(uNormalMap, vTexCoord).rgb);
+    }
+    else {
+        normal = normalize(vNormal);        
+    }
     
     vec3 lightDirection;
     float atten;
@@ -66,7 +75,7 @@ void main() {
         float shininess = 1.0 - uRoughness;
         if (uHasRoughnessMap) {
             shininess = shininess * (1.0 - texture2D(uRoughnessMap, vTexCoord).r);
-        }
+        }        
 
         float eDotR = dot(eye, reflection);	
         if (eDotR > 0.0)
@@ -76,6 +85,6 @@ void main() {
             result += uLightColor * vec3(shininess)  * si;
         }
     }
-        
+            
     gl_FragColor = vec4(result, 1.0);
 }                           
