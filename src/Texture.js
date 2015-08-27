@@ -8,6 +8,11 @@ pkzo.Texture = function (url) {
   this.load();
 }
 
+pkzo.Texture.load = function (url) {
+  // TODO make the aply cleaner
+  return new pkzo.Texture(url);
+}
+
 pkzo.Texture.prototype.load = function () {	
   this.image = new Image();
   var texture = this;
@@ -53,5 +58,6 @@ pkzo.Texture.prototype.bind = function (gl, channel) {
     this.upload();
   }
 	// TODO channel
+  this.gl.activeTexture(gl.TEXTURE0 + channel);
   this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
 }

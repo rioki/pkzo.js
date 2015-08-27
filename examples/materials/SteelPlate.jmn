@@ -1,0 +1,6 @@
+{
+    "texture": "textures/SteelPlate.png",
+    "normalMap": "textures/SteelPlate_Normal.png",
+    "roughness": 1.0,
+    "roughnessMap": "textures/SteelPlate_Roughness.png"
+}

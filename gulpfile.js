@@ -17,6 +17,7 @@ var VERSION = '0.0.1';
 
 // The order of the files must be enforced.
 var libsrcs = [
+  'src/http.js',
   'src/pkzo.js',
   'src/shaders.js',
 	'src/vector.js',
