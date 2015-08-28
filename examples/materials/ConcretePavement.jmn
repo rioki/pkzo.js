@@ -1,0 +1,5 @@
+{
+    "texture": "textures/ConcretePavement.jpg",
+    "normalMap": "textures/ConcretePavement_Normal.jpg",
+    "roughness": 0.7
+}
