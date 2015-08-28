@@ -1,3 +1,4 @@
+precision highp float;
 
 uniform mat4 uProjectionMatrix;
 uniform mat4 uViewMatrix;

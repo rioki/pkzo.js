@@ -24,6 +24,7 @@ var libsrcs = [
 	'src/matrix.js',
 	'src/Canvas.js',
 	'src/Texture.js',
+  'src/CubeMap.js',
 	'src/Shader.js',
   'src/Scene.js',
 	'src/Buffer.js',
@@ -36,6 +37,7 @@ var libsrcs = [
 	'src/DirectionalLight.js',
   'src/PointLight.js',
   'src/SpotLight.js',
+  'src/SkyBox.js',
   'src/Renderer.js'  
 ];
 

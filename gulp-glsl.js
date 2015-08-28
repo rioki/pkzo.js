@@ -72,6 +72,7 @@ module.exports = function(file, opt) {
 
     var raw = file.contents.toString();
     raw = raw.replace(/(\n|\r|(\r\n))/g, '\\n');
+    raw = raw.replace(/\"/g, '\\"');
     content = new Buffer(raw);
 
     return Buffer.concat([startLine, content, endLine]);
