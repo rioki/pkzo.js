@@ -23,19 +23,13 @@ pkzo.Texture.prototype.load = function () {
 }
 
 pkzo.Texture.prototype.upload = function () {
+  if (! this.loaded) {
+    throw Error('Can not upload texture that is not loaded yet.');
+  }
+  
   this.id = this.gl.createTexture();
   this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
   
-  if (this.loaded) {
-    this.sync();
-  }
-  else {
-    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
-  }
-}
-
-pkzo.Texture.prototype.sync = function () {
-  this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);  
   this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image);  
   this.gl.generateMipmap(this.gl.TEXTURE_2D);
   
@@ -43,8 +37,6 @@ pkzo.Texture.prototype.sync = function () {
   this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_LINEAR);
   this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
   this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
-  
-  // can we discard image now?
 }
 
 pkzo.Texture.prototype.release = function () {
@@ -53,11 +45,20 @@ pkzo.Texture.prototype.release = function () {
 }
 
 pkzo.Texture.prototype.bind = function (gl, channel) {
-	this.gl = gl;
-  if (! this.id) {
-    this.upload();
-  }
-	// TODO channel
+	this.gl = gl;  
+    
   this.gl.activeTexture(gl.TEXTURE0 + channel);
-  this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
+  
+  if (this.loaded) {  
+    if (! this.id) {
+      this.upload();
+    }
+    else 
+    {
+      this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
+    }
+  }
+  else {
+    this.gl.bindTexture(this.gl.TEXTURE_2D, 0);
+  }
 }

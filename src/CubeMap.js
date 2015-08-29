@@ -16,10 +16,7 @@ pkzo.CubeMap.prototype.load = function (textures) {
   var onload = function () {
     cubemap.loadCount++;
     if (cubemap.loadCount == 6) {
-      cubemap.loaded = true;
-      if (cubemap.id) {
-        cubemap.sync();
-      }
+      cubemap.loaded = true;      
     }
   };
   
@@ -49,16 +46,12 @@ pkzo.CubeMap.prototype.load = function (textures) {
 }
 
 pkzo.CubeMap.prototype.upload = function () {
+  if (! this.loaded) {
+    throw Error('Can not upload texture that is not loaded yet.');
+  }
+  
   this.id = this.gl.createTexture();
   this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, this.id);
-  
-  if (this.loaded) {
-    this.sync();
-  }  
-}
-
-pkzo.CubeMap.prototype.sync = function () {
-  this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, this.id);  
   
   this.gl.texImage2D(this.gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.xposImage);
   this.gl.texImage2D(this.gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.xnegImage);
@@ -79,12 +72,21 @@ pkzo.CubeMap.prototype.release = function () {
 }
 
 pkzo.CubeMap.prototype.bind = function (gl, channel) {
-  this.gl = gl;
-  if (! this.id) {
-    this.upload();
-  }
-  // TODO channel
+  this.gl = gl;  
+    
   this.gl.activeTexture(gl.TEXTURE0 + channel);
-  this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, this.id);
+  
+  if (this.loaded) {  
+    if (! this.id) {
+      this.upload();
+    }
+    else 
+    {
+      this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, this.id);
+    }
+  }
+  else {
+    this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, 0);
+  }
 }
 

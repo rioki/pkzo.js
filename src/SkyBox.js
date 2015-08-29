@@ -9,6 +9,8 @@ pkzo.SkyBox.prototype = Object.create(pkzo.Entity.prototype);
 pkzo.SkyBox.prototype.constructor = pkzo.SkyBox;
 
 pkzo.SkyBox.prototype.enqueue = function (renderer) {
-  renderer.addSkyBox(this.cubeMap);
+  if (this.cubeMap.loaded) {
+    renderer.addSkyBox(this.cubeMap);
+  }
 }
 

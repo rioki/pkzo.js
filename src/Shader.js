@@ -65,34 +65,46 @@ pkzo.Shader.prototype.setArrtibute = function (name, buffer, elementSize) {
     var elementSize = buffer.elementSize;
   }
   
-  var pos = this.gl.getAttribLocation(this.id, name);
-  this.gl.enableVertexAttribArray(pos);
-  this.gl.vertexAttribPointer(pos, elementSize, buffer.elementType, this.gl.FALSE, 0, 0);  
+  var pos = this.gl.getAttribLocation(this.id, name);  
+  if (pos != -1) {
+    this.gl.enableVertexAttribArray(pos);
+    this.gl.vertexAttribPointer(pos, elementSize, buffer.elementType, this.gl.FALSE, 0, 0);  
+  }
 }
 
 pkzo.Shader.prototype.setUniform1i = function (name, value) {
   var loc = this.gl.getUniformLocation(this.id, name);
-  this.gl.uniform1i(loc, value);
+  if (loc != -1) {
+    this.gl.uniform1i(loc, value);
+  }
 }
 
 pkzo.Shader.prototype.setUniform1f = function (name, value) {
   var loc = this.gl.getUniformLocation(this.id, name);
-  this.gl.uniform1f(loc, value);
+  if (loc != -1) {
+    this.gl.uniform1f(loc, value);
+  }
 }
 
 pkzo.Shader.prototype.setUniform2fv = function (name, value) {
   var loc = this.gl.getUniformLocation(this.id, name);
-  this.gl.uniform2f(loc, value[0], value[1]);
+  if (loc != -1) {
+    this.gl.uniform2f(loc, value[0], value[1]);
+  }
 }
 
 pkzo.Shader.prototype.setUniform3fv = function (name, value) {
   var loc = this.gl.getUniformLocation(this.id, name);
-  this.gl.uniform3f(loc, value[0], value[1], value[2]);
+  if (loc != -1) {
+    this.gl.uniform3f(loc, value[0], value[1], value[2]);
+  }
 }
 
 pkzo.Shader.prototype.setUniform4fv = function (name, value) {
   var loc = this.gl.getUniformLocation(this.id, name);
-  this.gl.uniform4f(loc, value[0], value[1], value[2], value[4]);
+  if (loc != -1) {
+    this.gl.uniform4f(loc, value[0], value[1], value[2], value[4]);
+  }
 }
 
 pkzo.Shader.prototype.setUniformMatrix3fv = function (name, value, transpose) {
@@ -100,7 +112,9 @@ pkzo.Shader.prototype.setUniformMatrix3fv = function (name, value, transpose) {
     var transpose = false;
   }
   var loc = this.gl.getUniformLocation(this.id, name);
-  this.gl.uniformMatrix3fv(loc, transpose, value);
+  if (loc != -1) {
+    this.gl.uniformMatrix3fv(loc, transpose, value);
+  }
 }
 
 pkzo.Shader.prototype.setUniformMatrix4fv = function (name, value, transpose) {
@@ -108,7 +122,9 @@ pkzo.Shader.prototype.setUniformMatrix4fv = function (name, value, transpose) {
     var transpose = false;
   }
   var loc = this.gl.getUniformLocation(this.id, name);
-  this.gl.uniformMatrix4fv(loc, transpose, value);
+  if (loc != -1) {
+    this.gl.uniformMatrix4fv(loc, transpose, value);
+  }
 }
 
 
