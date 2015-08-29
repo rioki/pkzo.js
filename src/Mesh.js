@@ -118,6 +118,7 @@ pkzo.Mesh.sphere = function (radius, nLatitude, nLongitude) {
   mesh.addVertex(pkzo.vec3(0, 0, -radius), pkzo.vec3(0, 0, -1), pkzo.vec2(0.5, 1), pkzo.vec3(0, 1, 0)); // bottom vertex
    
   // body vertices
+  var twoPi = Math.PI * 2.0;
   for (var p = 1; p < nPitch; p++) {    
     var out = Math.abs(radius * Math.sin(p * pitchInc));    
     var z   = radius * Math.cos(p * pitchInc);
@@ -128,7 +129,7 @@ pkzo.Mesh.sphere = function (radius, nLatitude, nLongitude) {
       
       var vec  = pkzo.vec3(x, y, z);
       var norm = pkzo.normalize(vec);
-      var tc   = pkzo.vec2(s / nLatitude, p / nPitch); 
+      var tc   = pkzo.vec2(s / nLatitude, p / nPitch);      
       var tang = pkzo.cross(norm, pkzo.vec3(0, 0, 1));
       mesh.addVertex(vec, norm, tc, tang);
     }
@@ -154,6 +155,125 @@ pkzo.Mesh.sphere = function (radius, nLatitude, nLongitude) {
       mesh.addTriangle(c, d, a);
     }
   }
+  
+  mesh.loaded = true;
+  return mesh;
+}
+
+pkzo.Mesh.icoSphere = function (radius, recursionLevel) {
+  var t = (1.0 + Math.sqrt(5.0)) / 2.0;
+  
+  var verts = [
+    pkzo.vec3(-1,  t,  0),
+    pkzo.vec3( 1,  t,  0),
+    pkzo.vec3(-1, -t,  0),
+    pkzo.vec3( 1, -t,  0),
+
+    pkzo.vec3( 0, -1,  t),
+    pkzo.vec3( 0,  1,  t),
+    pkzo.vec3( 0, -1, -t),
+    pkzo.vec3( 0,  1, -t),
+
+    pkzo.vec3( t,  0, -1),
+    pkzo.vec3( t,  0,  1),
+    pkzo.vec3(-t,  0, -1),
+    pkzo.vec3(-t,  0,  1),
+  ];
+  for (var i = 0; i < verts.length; i++) {
+    verts[i] = pkzo.normalize(verts[i]);
+  }
+  
+  var faces = [
+    [0, 11, 5],
+    [0, 5, 1],
+    [0, 1, 7],
+    [0, 7, 10],
+    [0, 10, 11],
+
+    [1, 5, 9],
+    [5, 11, 4],
+    [11, 10, 2],
+    [10, 7, 6],
+    [7, 1, 8],
+
+    [3, 9, 4],
+    [3, 4, 2],
+    [3, 2, 6],
+    [3, 6, 8],
+    [3, 8, 9],
+
+    [4, 9, 5],
+    [2, 4, 11],
+    [6, 2, 10],
+    [8, 6, 7],
+    [9, 8, 1],  
+  ];
+  
+  var midpointCache = [];  
+  
+  var addMidpointCache = function (p1, p2, i) {
+    midpointCache.push({p1: p1, p2: p2, i: i});
+  }
+  var getMidpointCache = function (p1, p2) {
+    for (var i = 0; i < midpointCache.length; i++) {
+      if (midpointCache.p1 == p1 && midpointCache.p2 == p2) {
+        return midpointCache.i;
+      }
+    }
+    return null;
+  }
+  
+  var midpoint = function (p1, p2) {
+    var si = p1 < p2 ? p1 : p2;
+    var gi = p1 < p2 ? p2 : p1;
+    
+    var ci = getMidpointCache(si, gi);
+    if (ci != null)
+    {
+      return ci;
+    }
+
+    var point1 = verts[p1];
+    var point2 = verts[p2];
+    var middle = pkzo.normalize(pkzo.add(point1, point2));
+    
+    verts.push(middle);
+    var i = verts.length - 1; 
+    
+    addMidpointCache(si, gi, i);
+    return i;
+  }
+  
+  for (var i = 0; i < recursionLevel; i++)
+  {
+    var faces2 = [];
+    faces.forEach(function (face) {
+      var a = midpoint(face[0], face[1]);
+      var b = midpoint(face[1], face[2]);
+      var c = midpoint(face[2], face[0]);
+
+      faces2.push([face[0], a, c]);
+      faces2.push([face[1], b, a]);
+      faces2.push([face[2], c, b]);
+      faces2.push([a, b, c]);
+    });
+    faces = faces2;
+  }
+  
+  var mesh = new pkzo.Mesh();
+  
+  var twoPi = Math.PI * 2.0;
+  verts.forEach(function (v) {
+    var vertex   = pkzo.svmult(v, radius);
+    var normal   = v;     
+    var texCoord = pkzo.vec2(Math.atan(v[1]/v[0]) / twoPi, Math.acos(v[2]) / twoPi);
+    var tangent  = pkzo.cross(normal, pkzo.vec3(0, 0, 1));
+    mesh.addVertex(vertex, normal, texCoord, tangent);
+  });
+  
+  faces.forEach(function (face) {
+    mesh.addTriangle(face[0], face[1], face[2]);
+  });
   
   mesh.loaded = true;
   return mesh;

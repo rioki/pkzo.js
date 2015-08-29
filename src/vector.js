@@ -123,3 +123,9 @@ pkzo.multMatrixVector = function (m, v) {
 	
 	return r;
 }
+
+pkzo.midpoint = function (a, b) {
+  var p = pkzo.sub(b, a);
+  m = pkzo.add(a, pkzo.svmult(p, 0.5));
+  return m;
+}
