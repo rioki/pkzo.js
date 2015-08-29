@@ -154,13 +154,6 @@ pkzo.Mesh.sphere = function (radius, nLatitude, nLongitude) {
       mesh.addTriangle(c, d, a);
     }
   }
- 
-  var vc = mesh.vertices.length / 3;
-  mesh.indices.forEach(function (val, i) {
-    if (val >= vc) {
-      console.error('val = %s; i = %s', val, i);
-    }
-  });
   
   mesh.loaded = true;
   return mesh;
@@ -308,8 +301,6 @@ pkzo.Mesh.prototype.computeTangents = function () {
     tan2[a] = pkzo.add(tan2[a], tdir);
     tan2[b] = pkzo.add(tan2[b], tdir);
     tan2[c] = pkzo.add(tan2[c], tdir);
-    
-    console.log(tan1[a]);
   }
     
   this.tangents = [];
