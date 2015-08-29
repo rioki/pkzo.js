@@ -38,7 +38,10 @@ var libsrcs = [
   'src/PointLight.js',
   'src/SpotLight.js',
   'src/SkyBox.js',
-  'src/Renderer.js'  
+  'src/EntityGroup.js',
+  'src/Particle.js',
+  'src/ParticleSystem.js',
+  'src/Renderer.js'
 ];
 
 gulp.task('glsl', function () {

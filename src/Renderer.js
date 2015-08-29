@@ -5,9 +5,10 @@ pkzo.Renderer = function (canvas) {
   var renderer = this;
   
   this.canvas.init(function (gl) {
-    renderer.sykBoxShader  = new pkzo.Shader(gl, pkzo.Inverse + pkzo.Transpose + pkzo.SkyBoxVert, pkzo.SkyBoxFrag);
-    renderer.ambientShader = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.AmbientFrag);
-    renderer.lightShader   = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.LightFrag);   
+    renderer.sykBoxShader   = new pkzo.Shader(gl, pkzo.Inverse + pkzo.Transpose + pkzo.SkyBoxVert, pkzo.SkyBoxFrag);
+    renderer.ambientShader  = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.AmbientFrag);
+    renderer.lightShader    = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.LightFrag);   
+    renderer.particleShader = new pkzo.Shader(gl, pkzo.ParticleVert, pkzo.ParticleFrag);
 
     renderer.screenPlane   = pkzo.Mesh.plane(2, 2);
   });
@@ -62,6 +63,16 @@ pkzo.Renderer.prototype.addSpotLight = function (position, direction, color, ran
   });
 }
 
+pkzo.Renderer.prototype.addParticle = function (position, size, texture, color, transparency) {
+  this.particles.push({
+    position:     position,
+    size:         size,
+    texture:      texture,
+    color:        color,
+    transparency: transparency
+  });
+}
+
 pkzo.Renderer.prototype.drawSkyBox = function (gl) {
   if (this.skyBox) {
     var shader = this.sykBoxShader;
@@ -73,7 +84,7 @@ pkzo.Renderer.prototype.drawSkyBox = function (gl) {
     this.skyBox.bind(gl, 0);
     shader.setUniform1i('uCubemap', 0);
     
-    this.screenPlane.draw(gl, shader);    
+    this.screenPlane.draw(gl, shader);
   }
 }
 
@@ -123,15 +134,48 @@ pkzo.Renderer.prototype.lightPass = function (gl, light) {
   }
   shader.setUniform3fv('uLightColor', light.color);
   
-  this.drawSolids(gl, shader);  
+  this.drawSolids(gl, shader);    
+}
+
+pkzo.Renderer.prototype.drawParticles = function (gl) {
+  
+  var shader = this.particleShader;
+  shader.bind();
+  shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);   
+  shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);
+  
+  // size!
+  this.particles.forEach(function (particle) {
+    
+    var modelMatrix = pkzo.mat4();
+    modelMatrix = pkzo.translate(modelMatrix, particle.position[0], particle.position[1], particle.position[2]);
+    shader.setUniformMatrix4fv('uModelMatrix', modelMatrix);
+    
+    // TODO material?
+    shader.setUniform3fv('uColor', particle.color);
+    shader.setUniform1f('uSize', particle.size * 0.5);
+    shader.setUniform1f('uTransparency', particle.transparency);
+    
+    if (particle.texture && particle.texture.loaded) {
+      shader.setUniform1i('uHasTexture', 1);
+      particle.texture.bind(gl, 0)
+      shader.setUniform1i('uTexture', 0);
+    }
+    else {
+      shader.setUniform1i('uHasTexture', 0);
+    }
+    
+    this.screenPlane.draw(gl, shader);
+  }, this);
 }
 
 pkzo.Renderer.prototype.render = function (scene) {
   var renderer = this;
   
-  this.solids = [];
-  this.lights = [];
-  this.skyBox = null;
+  this.solids    = [];
+  this.lights    = [];
+  this.skyBox    = null;
+  this.particles = [];
   scene.enqueue(this);
   
   this.canvas.draw(function (gl) {
@@ -152,5 +196,10 @@ pkzo.Renderer.prototype.render = function (scene) {
     renderer.lights.forEach(function (light) {
       renderer.lightPass(gl, light);
     });
+    
+    //gl.disable(gl.DEPTH_TEST);
+    gl.depthMask(false);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    renderer.drawParticles(gl);
   });
 }

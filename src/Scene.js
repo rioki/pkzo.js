@@ -13,7 +13,7 @@ pkzo.Scene.prototype.enqueue = function (renderer) {
 
 pkzo.Scene.prototype.add = function (entity) {
   if (! this.entities) {
-    this.entities = [entity]
+    this.entities = [entity];
   }
   else {
     this.entities.push(entity);

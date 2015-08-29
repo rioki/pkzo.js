@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>First pkzo.js Example</title>
+  <style>
+    html, body {
+        width: 100%;
+        height: 100%;       
+        padding: 0;
+        margin: 0;
+    }
+    #example { 
+        width: 100%;
+        height: 100%;
+        background: silver;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="example"></canvas>    
+  <script src="//cdnjs.cloudflare.com/ajax/libs/stats.js/r14/Stats.min.js"></script>
+  <script src="../dist/pkzo-0.0.1.js"></script>
+  <script src="js/FlyController.js"></script>
+  <script>
+    var stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    document.body.appendChild(stats.domElement);
+  
+    var renderer = new pkzo.Renderer('example');
+    
+    var scene  = new pkzo.Scene();
+    
+    var light = new pkzo.DirectionalLight();
+    light.rotate(45, 1, 1, 1);
+    scene.add(light);
+    
+    var skyTexture = pkzo.CubeMap.load({xpos: 'textures/CloudyAfternoon_xpos.jpg',
+                                        xneg: 'textures/CloudyAfternoon_xneg.jpg',
+                                        ypos: 'textures/CloudyAfternoon_ypos.jpg',
+                                        yneg: 'textures/CloudyAfternoon_yneg.jpg',
+                                        zpos: 'textures/CloudyAfternoon_zpos.jpg',
+                                        zneg: 'textures/CloudyAfternoon_zneg.jpg'});
+    var skyBox = new pkzo.SkyBox(skyTexture);
+    scene.add(skyBox);
+    
+    var planeMesh = pkzo.Mesh.plane(10, 10, 4, 4);
+    var planeMaterial = pkzo.Material.load('materials/Grass.jmn');
+    var plane = new pkzo.Object(planeMesh, planeMaterial);    
+    scene.add(plane);
+    
+    var smokeTexture = pkzo.Texture.load('textures/SmokeParticle.png');
+    var smoke = new pkzo.ParticleSystem({
+      texture:      smokeTexture,
+      //color:        pkzo.vec3(0.1, 0.05, 0.001),
+      color:        pkzo.vec3(0.5, 0.5, 0.5),
+      size:         0.25,
+      count:        200,
+      lifetime:     10.0,
+      transparency: 0.0,
+      onUpdate:   function (particle) {
+        var v = particle.getPosition()[2] * 0.001;
+        particle.translate(v, 0.0, 0.005);
+        var rem = Date.now() - particle.created;
+        particle.transparency = rem / (particle.lifetime * 1000.0)
+      },
+      onSpawn:    function (particle) {
+        var x = Math.random() * 0.3 - 0.15;
+        var y = Math.random() * 0.3 - 0.15;
+        particle.setPosition(pkzo.vec3(x, y, -0.1));
+        particle.lifetime = Math.random() * this.lifetime;
+      }
+    });
+    scene.add(smoke);
+    
+    var camera = new pkzo.Camera();
+    var controller = new FlyController(camera);
+    controller.position = pkzo.vec3(0.0, -2.0, 1.0);
+    controller.pitch    = 75.0;
+    scene.add(camera);
+    
+    var render = function () {
+      stats.begin();
+      controller.sync();
+      renderer.render(scene);            
+      stats.end();
+      requestAnimationFrame(render);
+    };
+
+    render();        
+  </script>
+</body>
+</html>
+
