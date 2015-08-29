@@ -37,7 +37,7 @@
     var white  = new pkzo.Material({color: pkzo.vec3(1, 1, 1)});
     
         
-    var ground = new pkzo.Object(pkzo.Mesh.plane(20, 20, 4, 4), new pkzo.Material({texture: new pkzo.Texture('textures/Marble.jpg')})); 
+    var ground = new pkzo.Object(pkzo.Mesh.plane(20, 20, 4, 4), new pkzo.Material({texture: 'textures/Marble.jpg'})); 
     scene.add(ground);
     
     var pedestal = new pkzo.Object(pkzo.Mesh.box(pkzo.vec3(0.25, 0.25, 0.5)), white); 

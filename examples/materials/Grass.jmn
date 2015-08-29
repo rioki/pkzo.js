@@ -1,0 +1,5 @@
+{
+    "texture": "textures/Grass.jpg",
+    "normalMap": "textures/Grass_Normal.jpg",
+    "roughness": 0.5
+}

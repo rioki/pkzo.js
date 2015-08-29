@@ -52,21 +52,26 @@
       'materials/ConcretePavement.jmn',
       'materials/WoodFloor.jmn',
       'materials/Marble.jmn',
-      'materials/Chrysopras.jmn'];
+      'materials/Chrysopras.jmn',
+      'materials/Grass.jmn'];
     
     var planeMesh  = pkzo.Mesh.plane(1, 1);
     var sphereMesh = pkzo.Mesh.sphere(0.25, 32, 12);
-    var s = -materials.length;
+    var s = -3.5;
+    var rowCount = 5;
     
     for (var i = 0; i < materials.length; i++) {
       var material = pkzo.Material.load(materials[i]);
       
+      var x = s + (i % rowCount) * 1.5;
+      var y = Math.floor(i / rowCount) * 1.5;
+      
       var plane = new pkzo.Object(planeMesh, material);
-      plane.translate(s + i * 2, 0, 0);      
+      plane.translate(x, y, 0);      
       scene.add(plane);
       
       var sphere = new pkzo.Object(sphereMesh, material);
-      sphere.translate(s + i * 2, 0, 0.5);      
+      sphere.translate(x, y, 0.5);      
       scene.add(sphere);
     }   
     
