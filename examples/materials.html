@@ -37,6 +37,15 @@
     light.rotate(45, 1, 1, 1);
     scene.add(light);
     
+    var skyTexture = pkzo.CubeMap.load({xpos: 'textures/CloudyAfternoon_xpos.jpg',
+                                        xneg: 'textures/CloudyAfternoon_xneg.jpg',
+                                        ypos: 'textures/CloudyAfternoon_ypos.jpg',
+                                        yneg: 'textures/CloudyAfternoon_yneg.jpg',
+                                        zpos: 'textures/CloudyAfternoon_zpos.jpg',
+                                        zneg: 'textures/CloudyAfternoon_zneg.jpg'});
+    var skyBox = new pkzo.SkyBox(skyTexture);
+    scene.add(skyBox);
+    
     var materials = [
       'materials/White.jmn',      
       'materials/SteelPlate.jmn',
