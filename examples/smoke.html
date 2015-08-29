@@ -52,10 +52,9 @@
     scene.add(plane);
     
     var smokeTexture = pkzo.Texture.load('textures/SmokeParticle.png');
-    var smoke = new pkzo.ParticleSystem({
+    var smoke1 = new pkzo.ParticleSystem({
       texture:      smokeTexture,
-      //color:        pkzo.vec3(0.1, 0.05, 0.001),
-      color:        pkzo.vec3(0.5, 0.5, 0.5),
+      color:        pkzo.vec3(0.1, 0.75, 0.1),
       size:         0.25,
       count:        200,
       lifetime:     10.0,
@@ -73,7 +72,31 @@
         particle.lifetime = Math.random() * this.lifetime;
       }
     });
-    scene.add(smoke);
+    smoke1.setPosition(pkzo.vec3(-1, 0, 0));
+    scene.add(smoke1);
+    
+    var smoke2 = new pkzo.ParticleSystem({
+      texture:      smokeTexture,
+      color:        pkzo.vec3(0.75, 0.1, 0.1),
+      size:         0.25,
+      count:        200,
+      lifetime:     10.0,
+      transparency: 0.0,
+      onUpdate:   function (particle) {
+        var v = particle.getPosition()[2] * 0.001;
+        particle.translate(v, 0.0, 0.005);
+        var rem = Date.now() - particle.created;
+        particle.transparency = rem / (particle.lifetime * 1000.0)
+      },
+      onSpawn:    function (particle) {
+        var x = Math.random() * 0.3 - 0.15;
+        var y = Math.random() * 0.3 - 0.15;
+        particle.setPosition(pkzo.vec3(x, y, -0.1));
+        particle.lifetime = Math.random() * this.lifetime;
+      }
+    });
+    smoke2.setPosition(pkzo.vec3(1, 0, 0));
+    scene.add(smoke2);
     
     var camera = new pkzo.Camera();
     var controller = new FlyController(camera);

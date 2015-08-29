@@ -12,7 +12,7 @@ pkzo.Particle.prototype.constructor = pkzo.Particle;
 
 pkzo.Particle.prototype.enqueue = function (renderer) {
   if (this.texture.loaded) {
-    renderer.addParticle(this.getPosition(), this.size, this.texture, this.color, this.transparency);
+    renderer.addParticle(this.getWorldPosition(), this.size, this.texture, this.color, this.transparency);
   }
 }
 

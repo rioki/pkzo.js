@@ -27,6 +27,16 @@ pkzo.Entity.prototype.getPosition = function () {
   return pkzo.vec3(this.transform[12], this.transform[13], this.transform[14]);
 }
 
+pkzo.Entity.prototype.getWorldPosition = function () {
+  if (this.parent) {
+    // TODO parent rotation
+    return pkzo.add(this.parent.getWorldPosition(), this.getPosition());
+  }
+  else {
+    return this.getPosition();
+  }  
+}
+
 pkzo.Entity.prototype.setPosition = function (value) {
   this.transform[12] = value[0];
   this.transform[13] = value[1];
