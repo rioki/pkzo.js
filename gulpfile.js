@@ -62,10 +62,10 @@ gulp.task('library', ['glsl', 'PlyParser'], function() {
     .pipe(concat('pkzo-' + VERSION + '.js'))
 		.pipe(sourcemaps.write())
     .pipe(gulp.dest('./dist/'))
-    /*.pipe(uglify())
+    .pipe(uglify())
     .pipe(rename('pkzo-' + VERSION + '.min.js'))
 		.pipe(sourcemaps.write())
-    .pipe(gulp.dest('./dist/'))*/;
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('default', ['library']);
