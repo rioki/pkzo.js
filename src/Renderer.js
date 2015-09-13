@@ -90,14 +90,14 @@ pkzo.Renderer.prototype.drawSkyBox = function (gl) {
 
 pkzo.Renderer.prototype.drawSolids = function (gl, shader) {
   this.solids.forEach(function (solid) {
-    var norm = pkzo.multMatrix(pkzo.mat3(this.viewMatrix), pkzo.mat3(solid.transform));
+    var norm = rgm.mmult(rgm.mat3(this.viewMatrix), rgm.mat3(solid.transform));
         
     shader.setUniformMatrix4fv('uModelMatrix', solid.transform);
     shader.setUniformMatrix3fv('uNormalMatrix', norm);
     
     solid.material.setup(gl, shader);     
     solid.mesh.draw(gl, shader);
-  });
+  }, this);
 }
 
 pkzo.Renderer.prototype.ambientPass = function (gl, ambientLight) {
@@ -147,8 +147,8 @@ pkzo.Renderer.prototype.drawParticles = function (gl) {
   // size!
   this.particles.forEach(function (particle) {
     
-    var modelMatrix = pkzo.mat4();
-    modelMatrix = pkzo.translate(modelMatrix, particle.position[0], particle.position[1], particle.position[2]);
+    var modelMatrix = rgm.mat4();
+    modelMatrix = rgm.translate(modelMatrix, particle.position[0], particle.position[1], particle.position[2]);
     shader.setUniformMatrix4fv('uModelMatrix', modelMatrix);
     
     // TODO material?

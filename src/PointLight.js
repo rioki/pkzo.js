@@ -2,7 +2,7 @@
 pkzo.PointLight = function () {
   pkzo.Entity.call(this);
 	
-	this.color = pkzo.vec3(0.5, 0.5, 0.5);
+	this.color = rgm.vec3(0.5, 0.5, 0.5);
   this.range = 10.0;
 }
 

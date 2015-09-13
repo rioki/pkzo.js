@@ -1,36 +1,36 @@
 
 pkzo.Entity = function () {
-  this.transform = pkzo.mat4(1);
+  this.transform = rgm.mat4(1);
 }
 
 pkzo.Entity.prototype.translate = function (x, y, z) {
-	this.transform = pkzo.translate(this.transform, x, y, z);
+	this.transform = rgm.translate(this.transform, x, y, z);
 }
 
 pkzo.Entity.prototype.rotate = function (angle, x, y, z) {
-	this.transform = pkzo.rotate(this.transform, angle, x, y, z);
+	this.transform = rgm.rotate(this.transform, angle, x, y, z);
 }
 
 pkzo.Entity.prototype.getXVector = function () {
-	return pkzo.vec3(this.transform[0], this.transform[1], this.transform[2]);
+	return rgm.vec3(this.transform[0], this.transform[1], this.transform[2]);
 }
 
 pkzo.Entity.prototype.getYVector = function () {
-	return pkzo.vec3(this.transform[4], this.transform[5], this.transform[6]);
+	return rgm.vec3(this.transform[4], this.transform[5], this.transform[6]);
 }
 
 pkzo.Entity.prototype.getZVector = function () {
-	return pkzo.vec3(this.transform[8], this.transform[9], this.transform[10]);
+	return rgm.vec3(this.transform[8], this.transform[9], this.transform[10]);
 }
 
 pkzo.Entity.prototype.getPosition = function () {
-  return pkzo.vec3(this.transform[12], this.transform[13], this.transform[14]);
+  return rgm.vec3(this.transform[12], this.transform[13], this.transform[14]);
 }
 
 pkzo.Entity.prototype.getWorldPosition = function () {
   if (this.parent) {
     // TODO parent rotation
-    return pkzo.add(this.parent.getWorldPosition(), this.getPosition());
+    return rgm.add(this.parent.getWorldPosition(), this.getPosition());
   }
   else {
     return this.getPosition();
@@ -45,9 +45,9 @@ pkzo.Entity.prototype.setPosition = function (value) {
 
 pkzo.Entity.prototype.lookAt = function (target, up) {
   var position = this.getPosition();
-  var forward  = pkzo.normalize(pkzo.sub(target, position));
-  var right    = pkzo.normalize(pkzo.cross(forward, up));
-  var upn      = pkzo.normalize(pkzo.cross(right, forward));
+  var forward  = rgm.normalize(rgm.sub(target, position));
+  var right    = rgm.normalize(rgm.cross(forward, up));
+  var upn      = rgm.normalize(rgm.cross(right, forward));
   
   // TODO scaling
   this.transform[0] = right[0];

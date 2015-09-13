@@ -44,7 +44,7 @@ pkzo.Mesh.plane = function (width, height, wres, hres) {
       var y = -h2 + j * hs;
       var t = i;
       var s = j;
-      mesh.addVertex(pkzo.vec3(x, y, 0), pkzo.vec3(0, 0, 1), pkzo.vec2(t, s), pkzo.vec3(0, 1, 0));            
+      mesh.addVertex(rgm.vec3(x, y, 0), rgm.vec3(0, 0, 1), rgm.vec2(t, s), rgm.vec3(0, 1, 0));            
     }
   }
   
@@ -110,12 +110,12 @@ pkzo.Mesh.sphere = function (radius, nLatitude, nLongitude) {
   
   var nPitch = nLongitude + 1;
   
-  var pitchInc = pkzo.radians(180.0 / nPitch);
-  var rotInc   = pkzo.radians(360.0 / nLatitude);
+  var pitchInc = rgm.radians(180.0 / nPitch);
+  var rotInc   = rgm.radians(360.0 / nLatitude);
  
   // poles
-  mesh.addVertex(pkzo.vec3(0, 0, radius), pkzo.vec3(0, 0, 1), pkzo.vec2(0.5, 0), pkzo.vec3(0, 1, 0)); // top vertex
-  mesh.addVertex(pkzo.vec3(0, 0, -radius), pkzo.vec3(0, 0, -1), pkzo.vec2(0.5, 1), pkzo.vec3(0, 1, 0)); // bottom vertex
+  mesh.addVertex(rgm.vec3(0, 0, radius), rgm.vec3(0, 0, 1), rgm.vec2(0.5, 0), rgm.vec3(0, 1, 0)); // top vertex
+  mesh.addVertex(rgm.vec3(0, 0, -radius), rgm.vec3(0, 0, -1), rgm.vec2(0.5, 1), rgm.vec3(0, 1, 0)); // bottom vertex
    
   // body vertices
   var twoPi = Math.PI * 2.0;
@@ -127,10 +127,10 @@ pkzo.Mesh.sphere = function (radius, nLatitude, nLongitude) {
       var x = out * Math.cos(s * rotInc);
       var y = out * Math.sin(s * rotInc);
       
-      var vec  = pkzo.vec3(x, y, z);
-      var norm = pkzo.normalize(vec);
-      var tc   = pkzo.vec2(s / nLatitude, p / nPitch);      
-      var tang = pkzo.cross(norm, pkzo.vec3(0, 0, 1));
+      var vec  = rgm.vec3(x, y, z);
+      var norm = rgm.normalize(vec);
+      var tc   = rgm.vec2(s / nLatitude, p / nPitch);      
+      var tang = rgm.cross(norm, rgm.vec3(0, 0, 1));
       mesh.addVertex(vec, norm, tc, tang);
     }
   }
@@ -164,20 +164,20 @@ pkzo.Mesh.icoSphere = function (radius, recursionLevel) {
   var t = (1.0 + Math.sqrt(5.0)) / 2.0;
   
   var verts = [
-    pkzo.vec3(-1,  t,  0),
-    pkzo.vec3( 1,  t,  0),
-    pkzo.vec3(-1, -t,  0),
-    pkzo.vec3( 1, -t,  0),
+    rgm.vec3(-1,  t,  0),
+    rgm.vec3( 1,  t,  0),
+    rgm.vec3(-1, -t,  0),
+    rgm.vec3( 1, -t,  0),
 
-    pkzo.vec3( 0, -1,  t),
-    pkzo.vec3( 0,  1,  t),
-    pkzo.vec3( 0, -1, -t),
-    pkzo.vec3( 0,  1, -t),
+    rgm.vec3( 0, -1,  t),
+    rgm.vec3( 0,  1,  t),
+    rgm.vec3( 0, -1, -t),
+    rgm.vec3( 0,  1, -t),
 
-    pkzo.vec3( t,  0, -1),
-    pkzo.vec3( t,  0,  1),
-    pkzo.vec3(-t,  0, -1),
-    pkzo.vec3(-t,  0,  1),
+    rgm.vec3( t,  0, -1),
+    rgm.vec3( t,  0,  1),
+    rgm.vec3(-t,  0, -1),
+    rgm.vec3(-t,  0,  1),
   ];
   for (var i = 0; i < verts.length; i++) {
     verts[i] = pkzo.normalize(verts[i]);
@@ -266,8 +266,8 @@ pkzo.Mesh.icoSphere = function (radius, recursionLevel) {
   verts.forEach(function (v) {
     var vertex   = pkzo.svmult(v, radius);
     var normal   = v;     
-    var texCoord = pkzo.vec2(Math.atan(v[1]/v[0]) / twoPi, Math.acos(v[2]) / twoPi);
-    var tangent  = pkzo.cross(normal, pkzo.vec3(0, 0, 1));
+    var texCoord = rgm.vec2(Math.atan(v[1]/v[0]) / twoPi, Math.acos(v[2]) / twoPi);
+    var tangent  = pkzo.cross(normal, rgm.vec3(0, 0, 1));
     mesh.addVertex(vertex, normal, texCoord, tangent);
   });
   
@@ -312,15 +312,15 @@ pkzo.Mesh.prototype.addVertex = function (vertex, normal, texCoord, tangent) {
 }
 
 pkzo.Mesh.prototype.getVertex = function (i) {
-  return pkzo.vec3(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]);
+  return rgm.vec3(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]);
 }
 
 pkzo.Mesh.prototype.getNormal = function (i) {
-  return pkzo.vec3(this.normals[i * 3], this.normals[i * 3 + 1], this.normals[i * 3 + 2]);
+  return rgm.vec3(this.normals[i * 3], this.normals[i * 3 + 1], this.normals[i * 3 + 2]);
 }
 
 pkzo.Mesh.prototype.getTexCoord = function (i) {
-  return pkzo.vec2(this.texCoords[i * 2], this.texCoords[i * 2 + 1]);
+  return rgm.vec2(this.texCoords[i * 2], this.texCoords[i * 2 + 1]);
 }
 
 pkzo.Mesh.prototype.addTriangle = function (a, b, c) {
@@ -381,8 +381,8 @@ pkzo.Mesh.prototype.computeTangents = function () {
   var tan1 = new Array(vertexCount);    
   var tan2 = new Array(vertexCount);
   for (var i = 0; i < vertexCount; i++) {
-    tan1[i] = pkzo.vec3(0);
-    tan2[i] = pkzo.vec3(0);
+    tan1[i] = rgm.vec3(0);
+    tan2[i] = rgm.vec3(0);
   }
   
   for (var i = 0; i < faceCount; i++) {
@@ -411,16 +411,16 @@ pkzo.Mesh.prototype.computeTangents = function () {
     var t2 = w3[1] - w1[1];
 
     var r = 1.0 / (s1 * t2 - s2 * t1);
-    var sdir = pkzo.vec3((t2 * x1 - t1 * x2) * r,  (t2 * y1 - t1 * y2) * r,(t2 * z1 - t1 * z2) * r);
-    var tdir = pkzo.vec3((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
+    var sdir = rgm.vec3((t2 * x1 - t1 * x2) * r,  (t2 * y1 - t1 * y2) * r,(t2 * z1 - t1 * z2) * r);
+    var tdir = rgm.vec3((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
 
-    tan1[a] = pkzo.add(tan1[a], sdir);
-    tan1[b] = pkzo.add(tan1[b], sdir);
-    tan1[c] = pkzo.add(tan1[c], sdir);
+    tan1[a] = rgm.add(tan1[a], sdir);
+    tan1[b] = rgm.add(tan1[b], sdir);
+    tan1[c] = rgm.add(tan1[c], sdir);
 
-    tan2[a] = pkzo.add(tan2[a], tdir);
-    tan2[b] = pkzo.add(tan2[b], tdir);
-    tan2[c] = pkzo.add(tan2[c], tdir);
+    tan2[a] = rgm.add(tan2[a], tdir);
+    tan2[b] = rgm.add(tan2[b], tdir);
+    tan2[c] = rgm.add(tan2[c], tdir);
   }
     
   this.tangents = [];
@@ -428,9 +428,9 @@ pkzo.Mesh.prototype.computeTangents = function () {
     var n = this.getNormal(j);
     var t = tan1[j];
     
-    var tn = pkzo.normalize(pkzo.svmult(pkzo.sub(t, n), pkzo.dot(n, t)));
+    var tn = rgm.normalize(rgm.vsmult(rgm.sub(t, n), rgm.dot(n, t)));
     
-    if (pkzo.dot(pkzo.cross(n, t), tan2[j]) < 0.0) {
+    if (rgm.dot(rgm.cross(n, t), tan2[j]) < 0.0) {
       this.tangents.push(-tn[0], -tn[1], -tn[2]);
     }
     else {

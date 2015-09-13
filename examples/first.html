@@ -20,6 +20,7 @@
 <body>
   <canvas id="example"></canvas>    
   <script src="//cdnjs.cloudflare.com/ajax/libs/stats.js/r14/Stats.min.js"></script>
+  <script src="js/rgm-0.1.0.js"></script>
   <script src="../dist/pkzo-0.0.1.js"></script>
   <script src="js/FlyController.js"></script>
   <script>
@@ -32,25 +33,25 @@
     var renderer = new pkzo.Renderer('example');
     
     var scene  = new pkzo.Scene();
-    scene.ambientLight = pkzo.vec3(0.02, 0.02, 0.02)
+    scene.ambientLight = rgm.vec3(0.02, 0.02, 0.02)
     
-    var white  = new pkzo.Material({color: pkzo.vec3(1, 1, 1)});
+    var white  = new pkzo.Material({color: rgm.vec3(1, 1, 1)});
     
         
     var ground = new pkzo.Object(pkzo.Mesh.plane(20, 20, 4, 4), new pkzo.Material({texture: 'textures/Marble.jpg'})); 
     scene.add(ground);
     
-    var pedestal = new pkzo.Object(pkzo.Mesh.box(pkzo.vec3(0.25, 0.25, 0.5)), white); 
-    pedestal.setPosition(pkzo.vec3(0.0, 0.0, 0.5));
+    var pedestal = new pkzo.Object(pkzo.Mesh.box(rgm.vec3(0.25, 0.25, 0.5)), white); 
+    pedestal.setPosition(rgm.vec3(0.0, 0.0, 0.5));
     scene.add(pedestal);
 
     var teapot = new pkzo.Object(pkzo.Mesh.load('meshes/Teapot.ply'), white);
-    teapot.setPosition(pkzo.vec3(0, 0, 1.0));
+    teapot.setPosition(rgm.vec3(0, 0, 1.0));
     scene.add(teapot);
     
     // spotlight
     var light1 = new pkzo.SpotLight();
-    light1.color  = pkzo.vec3(1.0, 1.0, 0.8);
+    light1.color  = rgm.vec3(1.0, 1.0, 0.8);
     light1.range  = 10;
     light1.cutoff = 0.9;
     light1.translate(1.5, -1.0, 3.0);        
@@ -60,14 +61,14 @@
     
     // fake ambient glow
     var light2 = new pkzo.PointLight();
-    light2.color  = pkzo.vec3(0.25, 0.2, 0.125);
+    light2.color  = rgm.vec3(0.25, 0.2, 0.125);
     light2.range  = 7.5;    
     light2.translate(0.0, 0.0, 2.5);        
     scene.add(light2);
     
     var camera = new pkzo.Camera();
     var controller = new FlyController(camera);
-    controller.position = pkzo.vec3(0.0, -2.0, 1.8);
+    controller.position = rgm.vec3(0.0, -2.0, 1.8);
     controller.pitch    = 75.0;
     scene.add(camera);
     

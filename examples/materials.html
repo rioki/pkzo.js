@@ -20,6 +20,7 @@
 <body>
   <canvas id="example"></canvas>    
   <script src="//cdnjs.cloudflare.com/ajax/libs/stats.js/r14/Stats.min.js"></script>
+  <script src="js/rgm-0.1.0.js"></script>
   <script src="../dist/pkzo-0.0.1.js"></script>
   <script src="js/FlyController.js"></script>
   <script>
@@ -78,7 +79,7 @@
     
     var camera = new pkzo.Camera();
     var controller = new FlyController(camera);
-    controller.position = pkzo.vec3(0.0, -2.0, 1.0);
+    controller.position = rgm.vec3(0.0, -2.0, 1.0);
     controller.pitch    = 75.0;
     scene.add(camera);
     

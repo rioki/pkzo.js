@@ -20,8 +20,6 @@ var libsrcs = [
   'src/http.js',
   'src/pkzo.js',
   'src/shaders.js',
-	'src/vector.js',
-	'src/matrix.js',
 	'src/Canvas.js',
 	'src/Texture.js',
   'src/CubeMap.js',

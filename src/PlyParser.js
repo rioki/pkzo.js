@@ -1135,9 +1135,9 @@ pkzo.PlyParser = (function() {
           }      
         }
         else {    
-          var vertex   = pkzo.vec3(0);
-          var normal   = pkzo.vec3(0);
-          var texCoord = pkzo.vec2(0);
+          var vertex   = rgm.vec3(0);
+          var normal   = rgm.vec3(0);
+          var texCoord = rgm.vec2(0);
           props.forEach(function (prop, i) {
             switch (prop) {
               case 'x':

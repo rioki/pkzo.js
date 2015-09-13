@@ -7,7 +7,7 @@ function FlyController(entity, domElement) {
   this.lastX         = 0.0;
   this.lastY         = 0.0;  
   this.rotate        = false;  
-  this.position      = pkzo.vec3(0, 0, 0); 
+  this.position      = rgm.vec3(0, 0, 0); 
   this.moveForward   = false;
   this.moveBackwards = false;
   this.moveLeft      = false;
@@ -92,26 +92,26 @@ FlyController.prototype.sync = function () {
   var dt  = (now - this.lastSync) / 1000.0;
   this.lastSync = now;
   
-  var dv  = pkzo.vec3(0, 0, 0);
+  var dv  = rgm.vec3(0, 0, 0);
   if (this.moveForward) {
-    dv = pkzo.add(dv, pkzo.neg(pkzo.svmult(this.entity.getZVector(), this.speed * dt)));
+    dv = rgm.add(dv, rgm.neg(rgm.vsmult(this.entity.getZVector(), this.speed * dt)));
   }
   if (this.moveBackwards) {
-    dv = pkzo.add(dv, pkzo.svmult(this.entity.getZVector(), this.speed * dt));
+    dv = rgm.add(dv, rgm.vsmult(this.entity.getZVector(), this.speed * dt));
   }
   if (this.moveLeft) {
-    dv = pkzo.add(dv, pkzo.neg(pkzo.svmult(this.entity.getXVector(), this.speed * dt)));
+    dv = rgm.add(dv, rgm.neg(rgm.vsmult(this.entity.getXVector(), this.speed * dt)));
   }
   if (this.moveRight) {
-    dv = pkzo.add(dv, pkzo.svmult(this.entity.getXVector(), this.speed * dt));
+    dv = rgm.add(dv, rgm.vsmult(this.entity.getXVector(), this.speed * dt));
   }
-  this.position = pkzo.add(this.position, dv);
+  this.position = rgm.add(this.position, dv);
   
-  var t = pkzo.mat4(1);  
+  var t = rgm.mat4(1);  
   
-  t = pkzo.translate(t, this.position[0], this.position[1], this.position[2]);  
-  t = pkzo.rotate(t, this.pitch, 1, 0, 0);  
-  t = pkzo.rotate(t, this.yaw, 0, 0, 1);
+  t = rgm.translate(t, this.position[0], this.position[1], this.position[2]);  
+  t = rgm.rotate(t, this.pitch, 1, 0, 0);  
+  t = rgm.rotate(t, this.yaw, 0, 0, 1);
   
   
   this.entity.transform = t;

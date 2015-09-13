@@ -1,6 +1,6 @@
 
 pkzo.Material = function (opts) {	
-  this.color     = pkzo.vec3(1, 1, 1);
+  this.color     = rgm.vec3(1, 1, 1);
   this.roughness = 1;
   
   if (opts) {
