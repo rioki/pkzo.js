@@ -8,7 +8,8 @@ pkzo.Renderer = function (canvas) {
     renderer.sykBoxShader   = new pkzo.Shader(gl, pkzo.Inverse + pkzo.Transpose + pkzo.SkyBoxVert, pkzo.SkyBoxFrag);
     renderer.ambientShader  = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.AmbientFrag);
     renderer.lightShader    = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.LightFrag);   
-    renderer.particleShader = new pkzo.Shader(gl, pkzo.ParticleVert, pkzo.ParticleFrag);
+    renderer.emissiveShader = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.EmissiveFrag);
+    renderer.particleShader = new pkzo.Shader(gl, pkzo.ParticleVert, pkzo.ParticleFrag);    
 
     renderer.screenPlane   = pkzo.Mesh.plane(2, 2);
   });
@@ -137,6 +138,17 @@ pkzo.Renderer.prototype.lightPass = function (gl, light) {
   this.drawSolids(gl, shader);    
 }
 
+pkzo.Renderer.prototype.emissivePass = function (gl) {
+  var shader = this.emissiveShader;    
+  shader.bind();
+  
+  shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);   
+  shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);   
+    
+  this.drawSolids(gl, shader);  
+}
+
+
 pkzo.Renderer.prototype.drawParticles = function (gl) {
   
   var shader = this.particleShader;
@@ -196,6 +208,8 @@ pkzo.Renderer.prototype.render = function (scene) {
     renderer.lights.forEach(function (light) {
       renderer.lightPass(gl, light);
     });
+    
+    renderer.emissivePass(gl);
     
     //gl.disable(gl.DEPTH_TEST);
     gl.depthMask(false);
