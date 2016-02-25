@@ -2,7 +2,10 @@
   "name": "pkzo.js",
   "version": "0.0.1",
   "description": "WebGL Scene Graph",
-  "main": "index.js",
+  "keywords": ["webgl", "scene graph", "graphic"],
+  "homepage": "https://github.com/rioki/pkzo.js",
+  "url": "https://github.com/rioki/pkzo.js/issues",
+  "main": "index.js",  
   "directories": {
     "test": "test"
   },
@@ -11,6 +14,11 @@
   },
   "author": "Sean \"rioki\" Farrell <sean.farrell@rioki.org>",
   "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git", 
+    "url": "https://github.com/rioki/pkzo.js.git"
+  },
   "devDependencies": {
     "ecstatic": "^0.8.0",
     "gulp": "^3.9.0",
