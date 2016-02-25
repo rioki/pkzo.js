@@ -192,10 +192,10 @@ pkzo.Renderer.prototype.render = function (scene) {
   
   this.canvas.draw(function (gl) {
     
-    gl.disable(gl.BLEND);
+    /*gl.disable(gl.BLEND);
     gl.depthMask(false);
     gl.disable(gl.DEPTH_TEST);
-    renderer.drawSkyBox(gl);
+    renderer.drawSkyBox(gl);*/
     
     gl.depthMask(true);
     gl.enable(gl.DEPTH_TEST);
@@ -209,11 +209,11 @@ pkzo.Renderer.prototype.render = function (scene) {
       renderer.lightPass(gl, light);
     });
     
-    renderer.emissivePass(gl);
+    /*renderer.emissivePass(gl);
     
     //gl.disable(gl.DEPTH_TEST);
     gl.depthMask(false);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    renderer.drawParticles(gl);
+    renderer.drawParticles(gl);*/
   });
 }
