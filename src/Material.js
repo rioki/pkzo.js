@@ -1,7 +1,8 @@
 
 pkzo.Material = function (opts) {	
-  this.color         = rgm.vec3(1, 1, 1);
+  this.albedo        = rgm.vec3(1, 1, 1);
   this.roughness     = 1;
+  this.metal         = 0;
   this.emissiveColor = rgm.vec3(0, 0, 0);
   
   if (opts) {
@@ -23,8 +24,8 @@ pkzo.Material.load = function (url) {
 }
 
 pkzo.Material.prototype.read = function (data) {
-  if (data.color) {
-    this.color = data.color;
+  if (data.albedo) {
+    this.albedo = data.albedo;
   }
   
   if (data.texture) {
@@ -41,6 +42,13 @@ pkzo.Material.prototype.read = function (data) {
     this.roughnessMap = pkzo.Texture.load(data.roughnessMap);
   }
   
+  if (data.metal) {
+    this.metal = data.metal;
+  }  
+  if (data.metalMap) {
+    this.metalMap = pkzo.Texture.load(data.metalMap);
+  }
+  
   if (data.normalMap) {
     this.normalMap = pkzo.Texture.load(data.normalMap);
   }
@@ -55,7 +63,7 @@ pkzo.Material.prototype.read = function (data) {
 
 pkzo.Material.prototype.setup = function (gl, shader) {
 	
-	shader.setUniform3fv('uColor', this.color);
+	shader.setUniform3fv('uAlbedo', this.albedo);
 	
 	if (this.texture && this.texture.loaded) {
 		shader.setUniform1i('uHasTexture', 1);
@@ -76,10 +84,20 @@ pkzo.Material.prototype.setup = function (gl, shader) {
     shader.setUniform1i('uHasRoughnessMap', 0);
   }
   
+  shader.setUniform1f('uMetal', this.metal);
+  if (this.roughnessMap && this.metalMap.loaded) {
+    shader.setUniform1i('uHasMetalMap', 1);
+		this.metalMap.bind(gl, 2);
+		shader.setUniform1i('uMetalMap', 2);
+  }
+  else {
+    shader.setUniform1i('uHasMetalMap', 0);
+  }
+  
   if (this.normalMap && this.normalMap.loaded) {
 		shader.setUniform1i('uHasNormalMap', 1);
-		this.normalMap.bind(gl, 2);
-		shader.setUniform1i('uNormalMap', 2);
+		this.normalMap.bind(gl, 3);
+		shader.setUniform1i('uNormalMap', 3);
 	}
 	else {
 		shader.setUniform1i('uHasNormalMap', 0);
@@ -89,8 +107,8 @@ pkzo.Material.prototype.setup = function (gl, shader) {
   
   if (this.emissiveMap && this.emissiveMap.loaded) {
 		shader.setUniform1i('uHasEmissiveMap', 1);
-		this.emissiveMap.bind(gl, 3);
-		shader.setUniform1i('uEmissiveMap', 3);
+		this.emissiveMap.bind(gl, 4);
+		shader.setUniform1i('uEmissiveMap', 4);
 	}
 	else {
 		shader.setUniform1i('uHasEmissiveMap', 0);

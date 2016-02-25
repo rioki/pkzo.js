@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>pkzo.js PBR</title>
+  <style>
+    html, body {
+        width: 100%;
+        height: 100%;       
+        padding: 0;
+        margin: 0;
+    }
+    #example { 
+        width: 100%;
+        height: 100%;
+        background: silver;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="example"></canvas>    
+  <script src="js/stats.min.js"></script>
+  <script src="js/dat.gui.min.js"></script>
+  <script src="js/rgm-0.1.0.js"></script>
+  <script src="js/color.js"></script>
+  <script src="../dist/pkzo-0.0.1.js"></script>
+  <script>  
+    var renderer = new pkzo.Renderer('example');
+    
+    var scene  = new pkzo.Scene();
+    scene.ambientLight = rgm.vec3(0.02, 0.02, 0.02);
+    
+    var material  = new pkzo.Material();
+    Object.defineProperty(material, "xalbedo", {
+      get: function () {
+        return vec32hex(this.albedo);
+      },
+      set: function(val) {
+        this.albedo = hex2vec3(val);        
+      }
+    });
+    
+    var teapot = new pkzo.Object(pkzo.Mesh.load('meshes/Teapot.ply'), material);
+    teapot.setPosition(rgm.vec3(0, 0, 1.0));
+    scene.add(teapot);
+        
+    // spotlight
+    var light1 = new pkzo.DirectionalLight();
+    // extend the light, so it is controlable
+    light1.sync = function () {
+      var t = rgm.mat4(1);
+      t = rgm.rotate(t, this._u, 1, 0, 0); 
+      t = rgm.rotate(t, this._v, 0, 0, 1); 
+      this.transform = t;
+    };
+    Object.defineProperty(light1, "u", {
+      get: function () {
+        return this._u;
+      },
+      set: function(val) {
+        this._u = val;
+        this.sync();
+      }
+    });
+    Object.defineProperty(light1, "v", {
+      get: function () {
+        return this._v;
+      },
+      set: function(val) {
+        this._v = val;
+        this.sync();
+      }
+    });
+    Object.defineProperty(light1, "xcolor", {
+      get: function () {
+        return vec32hex(this.color);
+      },
+      set: function(val) {
+        this.color = hex2vec3(val);        
+      }
+    });
+    light1.color  = rgm.vec3(1.0, 1.0, 0.8);
+    light1.u = 30;
+    light1.v = 45;
+    scene.add(light1);
+    
+    var camera = new pkzo.Camera();
+    camera.translate(0.0, -0.8, 1.5);
+    camera.rotate(75.0, 1, 0, 0);
+    scene.add(camera);
+    
+    var render = function () {
+      stats.begin();
+      renderer.render(scene);            
+      stats.end();
+      requestAnimationFrame(render);
+    };
+
+    var stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    document.body.appendChild(stats.domElement);
+    
+    var gui = new dat.GUI();
+    var guil = gui.addFolder("Light");
+    guil.add(light1, "u");
+    guil.add(light1, "v");
+    guil.addColor(light1, "xcolor");
+    guil.open();
+    
+    var guim = gui.addFolder("Material");
+    guim.addColor(material, "xalbedo");
+    guim.add(material, "roughness", 0, 1);
+    guim.add(material, "metal", 0, 1);
+    guim.open();
+    
+    render();        
+  </script>
+</body>
+</html>

@@ -10,9 +10,9 @@ varying vec2 vTexCoord;
 void main()
 {
     if (uHasTexture) {
-        gl_FragColor = texture2D(uTexture, vTexCoord) * vec4(uColor, 1);
+        gl_FragColor = texture2D(uTexture, vTexCoord) * vec4(uAlbedo, 1);
     }
     else {
-        gl_FragColor = vec4(uColor, 1);
+        gl_FragColor = vec4(uAlbedo, 1);
     }
 }

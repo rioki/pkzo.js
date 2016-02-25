@@ -1,6 +1,6 @@
 precision highp float;
 
-uniform vec3      uColor;
+uniform vec3      uAlbedo;
 uniform sampler2D uTexture;
 uniform bool      uHasTexture;
 
@@ -11,7 +11,7 @@ varying vec2 vTexCoord;
 
 void main()
 {
-    vec3 color = uColor;
+    vec3 color = uAlbedo;
     
     if (uHasTexture) {
         color = color * texture2D(uTexture, vTexCoord).rgb;

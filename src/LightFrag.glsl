@@ -1,6 +1,6 @@
 precision highp float;
 
-uniform vec3      uColor;
+uniform vec3      uAlbedo;
 uniform bool      uHasTexture;
 uniform sampler2D uTexture;
 uniform float     uRoughness;
@@ -23,7 +23,7 @@ varying vec3 vEye;
 varying mat3 vTBN;
 
 void main() {
-    vec3 color = uColor;    
+    vec3 color = uAlbedo;    
     if (uHasTexture) {
         color = color * texture2D(uTexture, vTexCoord).rgb;
     }
