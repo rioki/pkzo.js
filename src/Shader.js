@@ -1,11 +1,11 @@
 
-pkzo.Shader = function (gl, vertexCode, fragmentCode) {
-  this.gl           = gl;
+pkzo.Shader = function (vertexCode, fragmentCode) {
   this.vertexCode   = vertexCode;
   this.fragmentCode = fragmentCode;
 }
 
-pkzo.Shader.prototype.compile = function () {
+pkzo.Shader.prototype.compile = function (gl) {
+  this.gl = gl;
   var vertexShader   = this.compileShader(this.gl.VERTEX_SHADER,   this.vertexCode);
   var fragmentShader = this.compileShader(this.gl.FRAGMENT_SHADER, this.fragmentCode);
   
@@ -51,9 +51,9 @@ pkzo.Shader.prototype.release = function () {
   this.gl.deleteProgram(id);
 }
 
-pkzo.Shader.prototype.bind = function () {
+pkzo.Shader.prototype.bind = function (gl) {
   if (!this.id) {
-    this.compile();
+    this.compile(gl);
   }
   this.gl.useProgram(this.id);
 }

@@ -5,11 +5,11 @@ pkzo.Renderer = function (canvas) {
   var renderer = this;
   
   this.canvas.init(function (gl) {
-    renderer.sykBoxShader   = new pkzo.Shader(gl, pkzo.Inverse + pkzo.Transpose + pkzo.SkyBoxVert, pkzo.SkyBoxFrag);
-    renderer.ambientShader  = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.AmbientFrag);
-    renderer.lightShader    = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.LightFrag);   
-    renderer.emissiveShader = new pkzo.Shader(gl, pkzo.SolidVert, pkzo.EmissiveFrag);
-    renderer.particleShader = new pkzo.Shader(gl, pkzo.ParticleVert, pkzo.ParticleFrag);    
+    renderer.sykBoxShader   = new pkzo.Shader(pkzo.Inverse + pkzo.Transpose + pkzo.SkyBoxVert, pkzo.SkyBoxFrag);
+    renderer.ambientShader  = new pkzo.Shader(pkzo.SolidVert, pkzo.AmbientFrag);
+    renderer.lightShader    = new pkzo.Shader(pkzo.SolidVert, pkzo.LightFrag);   
+    renderer.emissiveShader = new pkzo.Shader(pkzo.SolidVert, pkzo.EmissiveFrag);
+    renderer.particleShader = new pkzo.Shader(pkzo.ParticleVert, pkzo.ParticleFrag);    
 
     renderer.screenPlane   = pkzo.Mesh.plane(2, 2);
   });
@@ -78,7 +78,7 @@ pkzo.Renderer.prototype.drawSkyBox = function (gl) {
   if (this.skyBox) {
     var shader = this.sykBoxShader;
     
-    shader.bind();
+    shader.bind(gl);
     shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);   
     shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);
     
@@ -103,7 +103,7 @@ pkzo.Renderer.prototype.drawSolids = function (gl, shader) {
 
 pkzo.Renderer.prototype.ambientPass = function (gl, ambientLight) {
   var shader = this.ambientShader;    
-  shader.bind();
+  shader.bind(gl);
   
   shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);   
   shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);   
@@ -115,7 +115,7 @@ pkzo.Renderer.prototype.ambientPass = function (gl, ambientLight) {
 
 pkzo.Renderer.prototype.lightPass = function (gl, light) {
   var shader = this.lightShader;    
-  shader.bind();
+  shader.bind(gl);
   
   shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);   
   shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);   
@@ -140,7 +140,7 @@ pkzo.Renderer.prototype.lightPass = function (gl, light) {
 
 pkzo.Renderer.prototype.emissivePass = function (gl) {
   var shader = this.emissiveShader;    
-  shader.bind();
+  shader.bind(gl);
   
   shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);   
   shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);   
@@ -152,7 +152,7 @@ pkzo.Renderer.prototype.emissivePass = function (gl) {
 pkzo.Renderer.prototype.drawParticles = function (gl) {
   
   var shader = this.particleShader;
-  shader.bind();
+  shader.bind(gl);
   shader.setUniformMatrix4fv('uProjectionMatrix', this.projectionMatrix);   
   shader.setUniformMatrix4fv('uViewMatrix',       this.viewMatrix);
   
