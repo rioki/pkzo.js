@@ -112,43 +112,35 @@ pkzo.Mesh.sphere = function (radius, nLatitude, nLongitude) {
   
   var pitchInc = rgm.radians(180.0 / nPitch);
   var rotInc   = rgm.radians(360.0 / nLatitude);
- 
-  // poles
-  mesh.addVertex(rgm.vec3(0, 0, radius), rgm.vec3(0, 0, 1), rgm.vec2(0.5, 0), rgm.vec3(0, 1, 0)); // top vertex
-  mesh.addVertex(rgm.vec3(0, 0, -radius), rgm.vec3(0, 0, -1), rgm.vec2(0.5, 1), rgm.vec3(0, 1, 0)); // bottom vertex
-   
-  // body vertices
+  
+  // vertices
   var twoPi = Math.PI * 2.0;
-  for (var p = 1; p < nPitch; p++) {    
+  for (var p = 0; p <= nPitch; p++) {    
     var out = Math.abs(radius * Math.sin(p * pitchInc));    
     var z   = radius * Math.cos(p * pitchInc);
     
     for(var s = 0; s <= nLatitude; s++) {
       var x = out * Math.cos(s * rotInc);
       var y = out * Math.sin(s * rotInc);
+      var theta = p / nPitch;
+      var phi   = s / nLatitude;                 
       
       var vec  = rgm.vec3(x, y, z);
       var norm = rgm.normalize(vec);
       var tc   = rgm.vec2(s / nLatitude, p / nPitch);      
-      var tang = rgm.cross(norm, rgm.vec3(0, 0, 1));
+      var tang = rgm.vec3(Math.sin(theta + twoPi) * Math.cos(phi),
+                          Math.sin(theta + twoPi) * Math.sin(phi),
+                          Math.cos(theta + twoPi));
       mesh.addVertex(vec, norm, tc, tang);
     }
   }
-  
-  // polar caps
-  var offLastVerts = 2 + ((nLatitude + 1) * (nPitch - 2));
-  for(var s = 0; s < nLatitude; s++)
-  {
-    mesh.addTriangle(0, 2 + s, 2 + s + 1);
-    mesh.addTriangle(1, offLastVerts + s, offLastVerts + s + 1);
-  }
  
-  // body
-  for(var p = 1; p < nPitch-1; p++) {
+  // faces
+  for(var p = 0; p < nPitch; p++) {
     for(var s = 0; s < nLatitude; s++) {
-      var a = 2 + (p-1) * (nLatitude + 1) + s;
+      var a = p * (nLatitude + 1) + s;
       var b = a + 1;
-      var d = 2 + p * (nLatitude + 1) + s;
+      var d = (p + 1) * (nLatitude + 1) + s;
       var c = d + 1;
       
       mesh.addTriangle(a, b, c);
